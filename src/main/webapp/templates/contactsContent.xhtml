@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition>
+            <div id="order-box" class="order-popup"></div>
+            <p align="center">
+                <font size="3"> <b>Режим работы:</b> Понедельник - Пятница с 8:00 до
+                    17:00 <br /> Суббота с 9:00 до 15:00
+                </font>
+            </p>
+            <div>
+                <h2 align="center">«Спецтехмонтаж» - Центральный офис в Донецке:</h2>
+                <br/>
+                <h:outputLink value="http://maps.yandex.ru" target="_blank">
+                    <f:param name="um" value="nZjENjWKghtflANtLq0_Mv08wTsCfU2A" />
+                    <f:param name="l" value="map" />
+                    <img src="resources/img/ymap_dn.jpg" title="Карта проезда к офису. *нажмите для просмотра" />
+                </h:outputLink>
+                <br/>
+            </div>
+            <div>
+                <h2 align="center">Филиал в Макеевке:</h2>
+                <br/>
+                <h:outputLink  value="http://maps.yandex.ru" target="_blank">
+                    <f:param name="um" value="mdtcLJ-Scj0MxBzmK8oP3LEyqKfrA-7r" />
+                    <f:param name="l" value="map" />
+                    <img src="resources/img/ymap_dn.jpg" title="Смотреть филиал в Макеевке" />
+                </h:outputLink>
+            </div>
+
+            <br/><br/><br/><br/>
+        </ui:composition>
+    </body>
+</html>

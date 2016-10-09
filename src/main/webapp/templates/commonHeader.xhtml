@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      >
+    <body>
+        <ui:composition>
+            <!-- Begin Top Navigation -->
+            <p id="top-nav">
+                <img src="resources/img/facebook.png" alt="Фейсбук" style="width: 32px;height: 32px;"/>
+                <img src="resources/img/twitter.png" alt="Фейсбук" style="width: 32px;height: 32px;"/>
+                <img src="resources/img/googleplus.png" alt="Фейсбук" style="width: 32px;height: 32px;"/>
+                <img src="resources/img/youtube.png" alt="Фейсбук" style="width: 32px;height: 32px;"/>
+                <img src="resources/img/rss.png" alt="Фейсбук" style="width: 32px;height: 32px;"/>
+            </p>
+            <!-- End Top Navigation -->
+            <div class="cl">&nbsp;</div>
+            <!-- Begin Header -->
+            <div id="header">
+                <h1 id="logo"><a class="notext" href="#" title="СпецТехМонтаж">СпецТехМонтаж</a></h1>
+                <!-- Begin Search -->
+                <div id="search">
+                    <form method="get" action="catalog.xhtml" id="search_form">
+                        &nbsp;&nbsp;&nbsp;<a href="#order-box" class="order-window"><img src="resources/img/basket.png" title="Корзина"/></a>
+                        <input type="text" value="#{Search.searchString}" title="Поиск..." name="search" class="blink field search" />
+                        <input type="hidden" name="page" value="1" />
+                        <input type="hidden" name="sort" value="#{CatalogController.sort}" />
+                        <input class="search-button" type="submit" value="Submit"  title="Искать"/>
+
+                        <div class="cl">&nbsp;</div>
+                    </form>
+                </div>
+                <div id="korzina">
+
+                </div>
+
+                <!-- End Search -->
+                <div class="cl">&nbsp;</div>
+            </div>
+            <!-- End Header -->
+            <div id="navigation">
+                <ul>
+                    <ui:repeat value="#{Menu.menuItems}" var="menuItem">
+                        <li class="#{menuItem.liCss}"><a href="#{menuItem.url}" class="#{menuItem.hrefCss}" title="#{menuItem.name}"><span>#{menuItem.name}</span></a></li>
+                    </ui:repeat>
+                </ul>
+                <div class="cl">&nbsp;</div>
+            </div>
+            <!-- End Navigation -->
+        </ui:composition>
+    </body>
+</html>

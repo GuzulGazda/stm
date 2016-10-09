@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <body>
+        <ui:composition>
+            <div id="order-box" class="order-popup"></div>
+            <div id="content">
+                <h:form id="form">
+                    <h4>Акции</h4>
+                </h:form>
+                <input type="hidden" id="page" name="page" value="#{CatalogController.currentPage}"/>
+                <input type="hidden" id="groupId" name="groupId" value="#{CatalogController.groupId}"/>
+                <input type="hidden" id="orderAmount" name="orderAmount" value="#{Order.overallAmount}"/>
+            </div>
+        </ui:composition>
+    </body>
+</html>

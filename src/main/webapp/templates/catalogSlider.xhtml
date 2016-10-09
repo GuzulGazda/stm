@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition>
+            <!-- Begin Slider -->
+            <div id="slider">
+                <!-- Begin Slider Items -->
+                <div class="slider-items">
+                    <ul>
+                        <li>
+                            <img src="resources/img/slide-img1.jpg" alt="First Slide Image" />
+                            <div class="slide-entry">
+                                <h2>Газоблоки</h2>
+                                <h3>Товар недели</h3>
+                                <p>Газоблоки - надежный, экономичный и экологичный строительный материал. Благодаря своим уникальным технологичным свойствам и многообразию цветового исполнения газоблоки используются в самом широком спектре строительства.</p>
+                                <h:form>
+                                    <h:link class="more" outcome="catalog">
+                                        <f:param name="groupId" value="15" />
+                                        <f:param name="page" value="1" />
+                                        <f:param name="sort" value="#{CatalogController.sort}" />
+                                    </h:link>
+                                </h:form>
+                            </div>
+                        </li>
+                        <li>
+                            <img src="resources/img/slide-img2.jpg" alt="Second Slide Image" />
+                            <div class="slide-entry">
+                                <h2>Штукатурка Knauf</h2>
+                                <h3>Товар недели</h3>
+                                <p>Универсальная стартовая штукатурка на основе гипса, для работ внутри помещений. Штукатурка украинского производителя. Предназначена для выравнивания поверхности перед нанесением финишных смесей..</p>
+                                <h:form>
+                                    <h:link class="more" outcome="catalog">
+                                        <f:param name="groupId" value="41" />
+                                        <f:param name="page" value="1" />
+                                        <f:param name="sort" value="#{CatalogController.sort}" />
+                                    </h:link>
+                                </h:form>
+                            </div>
+                        </li>
+                        <li>
+                            <img src="resources/img/slide-img3.jpg" alt="Third Slide Image" />
+                            <div class="slide-entry">
+                                <h2>Эмаль ПФ 115</h2>
+                                <h3>Товар недели</h3>
+                                <p>Алкидная пентафталевая эмаль ПФ 115 обеспечивает получение высокоглянцевого декоративного светостойкого покрытия. Покрытие, состоящее из двух слоев эмали ПФ 115, нанесенных на подготовленную загрунтованную поверхность, в умеренном и холодном климате сохраняет защитные свойства в течение четырех лет.</p>
+                                 <h:form>
+                                    <h:link class="more" outcome="catalog">
+                                        <f:param name="groupId" value="18" />
+                                        <f:param name="page" value="1" />
+                                        <f:param name="sort" value="#{CatalogController.sort}" />
+                                    </h:link>
+                                </h:form>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="cl">&nbsp;</div>
+                </div>
+                <!-- End Slider Items -->
+                <!-- Begin Slider Nav -->
+                <div class="slider-nav">
+                    <ul>
+                        <li class="first">
+                            <a href="#" title="Название товара 1">
+                                <span><img src="resources/img/slide-nav-img1.jpg" alt="Название товара 1" /></span>
+                            </a>
+                            <span class="slide-sep">&nbsp;</span>
+                        </li>
+                        <li>
+                            <a href="#" title="Название товара 2">
+                                <span><img src="resources/img/slide-nav-img2.jpg" alt="Название товара 2" /></span>
+                            </a>
+                            <span class="slide-sep">&nbsp;</span>
+                        </li>
+                        <li class="last">
+                            <a href="#" title="Название товара 3">
+                                <span><img src="resources/img/slide-nav-img3.jpg" alt="Название товара 3" /></span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="cl">&nbsp;</div>
+                </div>
+                <!-- End Slider Nav -->
+            </div>
+            <!-- End Slider -->
+        </ui:composition>
+    </body>
+</html>

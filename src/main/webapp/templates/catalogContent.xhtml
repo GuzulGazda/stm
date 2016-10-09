@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition>
+            <div id="item-box" class="item-popup"></div>
+            <div id="order-box" class="order-popup"></div>
+            <h:form id="form">
+                <h4>#{CatalogController.title}</h4>
+                <div class="pagination">
+                    <ui:repeat value="#{CatalogController.paginationButtons}" var="button" rendered="#{CatalogController.showPagination}">
+                        <span class="#{button.className}">
+                            <h:panelGroup rendered="#{Search.active}">
+                                <h:link value="#{button.label}" outcome="catalog" rendered="#{button.className == 'active'}">
+                                    <f:param name="search" value="#{Search.searchString}"/>
+                                    <f:param name="page" value="#{button.page}" />
+                                    <f:param name="sort" value="#{CatalogController.sort}" />
+                                </h:link>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{!Search.active}">
+                                <h:link value="#{button.label}" outcome="catalog" rendered="#{button.className == 'active'}">
+                                    <f:param name="groupId" value="#{CatalogController.groupId}" />
+                                    <f:param name="page" value="#{button.page}" />
+                                    <f:param name="sort" value="#{CatalogController.sort}" />
+                                </h:link>
+                            </h:panelGroup>
+
+                            <h:outputLabel rendered="#{button.className!= 'active'}">#{button.label}</h:outputLabel>
+                        </span>
+                    </ui:repeat>
+                </div>
+                <h:dataTable style="width: 640px" columnClasses="name, unit, cost, cost, cost, buy" value="#{CatalogController.itemList}" var="item" styleClass="responstable" rendered="#{CatalogController.itemList.size() > 0}">
+                    <h:column>
+                        <f:facet name="header">
+                            Товар
+                        </f:facet>
+                        <a href="#item-box" itemId="#{item.id}" class="item-window">#{item.name}</a>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Ед.
+                        </f:facet>
+                        <h:outputText value="#{item.itemUnit.text}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Цена
+                        </f:facet>
+                        <h:outputText value="#{item.price_1 / 100}">
+                            <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            От 5 000
+                        </f:facet>
+                        <h:outputText value="#{item.price_2 / 100}">
+                            <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            От 20 000
+                        </f:facet>
+                        <h:outputText value="#{item.price_3 / 100}">
+                            <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Купить
+                        </f:facet>
+                        <dib id="itemBuy#{item.id}">
+                            <h:panelGroup rendered="#{!item.ordered}">
+                                <a href="#" itemId="#{item.id}" class="item-add">Купить</a>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{item.ordered}">                
+                                <a href="#order-box" class="order-window"><img src="resources/img/basket_small.png" title="Корзина"/></a>
+                            </h:panelGroup>
+                        </dib>
+                    </h:column>
+                </h:dataTable>
+                <div class="pagination">
+                    <ui:repeat value="#{CatalogController.paginationButtons}" var="button" rendered="#{CatalogController.showPagination}">
+                        <span class="#{button.className}">
+                            <h:panelGroup rendered="#{Search.active}">
+                                <h:link value="#{button.label}" outcome="catalog" rendered="#{button.className == 'active'}">
+                                    <f:param name="search" value="#{Search.searchString}"/>
+                                    <f:param name="page" value="#{button.page}" />
+                                    <f:param name="sort" value="#{CatalogController.sort}" />
+                                </h:link>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{!Search.active}">
+                                <h:link value="#{button.label}" outcome="catalog" rendered="#{button.className == 'active'}">
+                                    <f:param name="groupId" value="#{CatalogController.groupId}" />
+                                    <f:param name="page" value="#{button.page}" />
+                                    <f:param name="sort" value="#{CatalogController.sort}" />
+                                </h:link>
+                            </h:panelGroup>
+
+                            <h:outputLabel rendered="#{button.className!= 'active'}">#{button.label}</h:outputLabel>
+                        </span>
+                    </ui:repeat>
+                </div>
+                <br/>
+                <input type="hidden" id="page" name="page" value="#{CatalogController.currentPage}"/>
+                <input type="hidden" id="groupId" name="groupId" value="#{CatalogController.groupId}"/>
+                <input type="hidden" id="orderAmount" name="orderAmount" value="#{Order.overallAmount}"/>
+            </h:form>
+
+        </ui:composition>
+    </body>
+</html>

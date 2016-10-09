@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition>
+            <div class="sidebar">
+                <div class="sidebar_top"></div>
+                <div class="sidebar_item">
+                    <h4>Сортировка</h4>
+                    <form action="catalog.xhtml" method="get" name="select">
+                        <h:selectOneMenu id="sort" value="#{CatalogController.sort}">
+                            <f:selectItem itemValue="name" itemLabel="По названию" />
+                            <f:selectItem itemValue="price" itemLabel="По цене" />
+                        </h:selectOneMenu>
+                        <h:panelGroup rendered="#{!Search.active}">
+                            <input type="hidden" name="groupId" value="#{CatalogController.groupId}" />
+                            <input type="hidden" name="page" value="1" />
+                            <input type="submit" value="Применить" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{Search.active}">
+                            <input type="hidden" name="search" value="#{Search.searchString}" />
+                            <input type="hidden" name="page" value="1" />
+                            <input type="submit" value="Применить" />
+                        </h:panelGroup>
+
+                    </form>
+
+                </div>
+                <div class="sidebar_base"></div>
+            </div>
+            <div class="sidebar">
+                <div class="sidebar_top"></div>
+                <div class="sidebar_item">
+                    <h2>Каталог товаров</h2>
+                    <ul class="nav nav-list">
+                        <ui:repeat value="#{Catalog.priceList.categorys}" var="category" >
+                            <li><label categoryId="#{category.id}" class="tree-toggle nav-header"><h4>#{category.name}</h4></label>
+                                <ui:repeat value="#{category.itemGroups}" var="itemGroup">
+                                    <ul class="nav nav-list tree" id="#{itemGroup.id}">
+                                        <li>
+                                            <h:link value="#{itemGroup.name}" title="#{itemGroup.name}" outcome="catalog" rendered="#{CatalogController.groupId != itemGroup.id}">
+                                                <f:param name="groupId" value="#{itemGroup.id}" />
+                                                <f:param name="page" value="1" />
+                                                <f:param name="sort" value="#{CatalogController.sort}" />
+                                            </h:link>
+                                            <h:outputLabel value="#{itemGroup.name}" title="#{itemGroup.name}" rendered="#{CatalogController.groupId == itemGroup.id}" style="text-overflow: ellipsis; width: 230px;"/>                                                
+                                        </li>
+                                    </ul>
+                                </ui:repeat>
+                            </li>
+                        </ui:repeat>
+                    </ul>
+                </div>
+                <div class="sidebar_base"></div>
+            </div>
+
+
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition>
+            <script>
+                $(this).ready(function () {
+
+                    $('.item-amount').change(function (event) {
+
+                        var item = $(this);
+                        var itemAmount = $(this).val();
+                        var itemId = $(this).attr('alt');
+
+                        if (/^0*[1-9]\d*$/.test(itemAmount)) {
+
+                        } else {
+                            alert('Недопустимое число. Введите значение от 1 до 9999');
+                            var oldAmount = -1;
+                            $.get('OrderChangeServlet', {
+                                itemId: itemId
+                            }, function (responseText) {
+                                oldAmount = parseInt(responseText);
+                                // TODO - check if oldAmount still -1
+                                item.val(oldAmount);
+                            });
+                            return false;
+                        }
+
+                        $.get('OrderChangeServlet', {
+                            itemId: itemId,
+                            itemAmount: itemAmount
+                        }, function (responseText) {
+                            parsedJSON = JSON.parse(responseText);
+                            var newOrderCost = '' + parsedJSON[0] / 100 + ',00';
+                            var newOrderAmount = parsedJSON[1];
+
+                            $('#itemAmount').text(newOrderAmount.toString());
+                            $('#overallCost').text(newOrderCost.toString());
+
+                            $('#ajaxOrderChangeServletResponse').text(newOrderCost);
+                        });
+                    });
+                    // ============   Delete item from order  ============//
+                    $('a.delete-item').click(function () {
+                        // Getting the variable's value from a link 
+                        var itemId = $(this).attr('itemId');
+                        $.get('OrderChangeServlet', {
+                            itemToDelete: itemId,
+                        }, function (responseText) {
+                            parsedJSON = JSON.parse(responseText);
+                            var newOrderCost = '' + parsedJSON[0] / 100 + ',00';
+                            var newOrderAmount = parsedJSON[1];
+
+                            $('#itemAmount').text(newOrderAmount.toString());
+                            $('#overallCost').text(newOrderCost.toString());
+
+                            $('#ajaxOrderChangeServletResponse').text(newOrderCost);
+                        });
+
+                        $.ajax({
+                            type: "GET",
+                            url: "templates/orderDialog.xhtml?itemId=" + itemId,
+                            dataType: 'html',
+                            success: function (html) {
+                                alert(html);
+                                $('.order-popup').html(html);
+                            },
+                            error: function () {
+                            },
+                            complete: function () {
+                            }
+                        });
+                        return false;
+                    });
+                    // TODO Create function for item popup
+//                    registryItemPopup();
+                });
+            </script>
+            <a href="#" class="close_order"><img src="resources/img/close_pop.png" class="btn_close" title="Закрыть" alt="З" /></a>
+            <h:outputText value="Ваша корзина пуста" rendered="#{Order.orderedItems.size() == 0}"/>
+            <h:dataTable columnClasses="del, name, unit, cost, cost" value="#{Order.orderedItems}" var="item" styleClass="responstable" rendered="#{Order.orderedItems.size()>0}">
+                <h:column>
+                    <f:facet name="header">
+                    </f:facet>
+                    <a href="#" class="delete-item" itemId="#{item.id}"><img src="resources/img/delete_item.png" title="Удалить товар" alt="Удалить" /></a>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        Товар
+                    </f:facet>
+
+                    <a href="#item-box" itemId="#{item.id}" class="item-window">#{item.name}</a>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        Ед.
+                    </f:facet>
+                    <h:outputText value="#{item.itemUnit.text}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        Цена
+                    </f:facet>
+                    <h:outputText value="#{item.price_1 / 100}">
+                        <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+                    </h:outputText>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        Количество
+                    </f:facet>
+                    <h:inputText id="item#{item.id}" class="item-amount" value="#{item.amount}" alt="#{item.id}" maxlength="4" size="4"  converter="javax.faces.Integer"/>
+                    <h:message for="item#{item.id}" style="color:red" />
+                </h:column>
+            </h:dataTable>
+            <br/>
+            Стоимость заказа: 
+            <h:outputText id="overallCost" value="#{Order.overallCost / 100}">
+                <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+            </h:outputText>
+            <h:outputText value=" руб." />
+        </ui:composition>
+    </body>
+</html>

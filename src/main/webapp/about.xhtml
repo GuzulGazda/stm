@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <title>Стройтехмонтаж</title>
+
+        <h:outputStylesheet name="css/style.css"/>
+        <h:outputStylesheet name="css/table.css"/>
+        <h:outputStylesheet name="css/pagination.css"/>
+        <h:outputScript name="js/jquery-1.6.2.min.js"/>
+        <h:outputScript name="js/jquery.jcarousel.min.js"/>
+        <h:outputScript name="js/jquery.modal.js"/>
+        <h:outputScript name="js/cufon-yui.js"/>
+        <h:outputScript name="js/Verdana_400-Verdana_700.font.js"/>
+        <h:outputScript name="js/functions.js"/>
+        <h:outputScript name="js/scripts.js"/>
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </h:head>
+
+    <h:body>
+        <!-- Begin Wrapper -->
+        <div id="wrapper">
+            <!-- Begin Shell -->
+            <div class="shell">
+                <ui:insert name="top">
+                    <ui:include src="templates/commonHeader.xhtml"/>
+                </ui:insert>
+                <div class="cl">&nbsp;</div>
+                <!-- Begin Main -->
+                <div id="main">
+                    <ui:insert name="slider">
+                        <ui:include src="templates/catalogSlider.xhtml"/>
+                    </ui:insert>
+                    <div id="content">
+                        <div class="top"></div>
+                        <!-- Begin Inner -->
+                        <div class="inner">
+                            <div id="sidebar_container">
+                                <ui:insert name="slider">
+                                    <ui:include src="templates/aboutSidebar.xhtml"/>
+                                </ui:insert>
+                            </div>
+                            <div id="table_container">
+                                <ui:insert name="slider">
+                                    <ui:include src="templates/aboutContent.xhtml"/>
+                                </ui:insert>
+                            </div>
+
+                        </div>
+                        <!-- End Inner -->
+                    </div>
+                    <!-- End Content -->
+
+
+                </div>
+                <!-- End Main -->
+                <ui:insert name="footer">
+                    <ui:include src="templates/commonFooter.xhtml"/>
+                </ui:insert>
+            </div>
+            <!-- End Shell -->
+        </div>
+        <!-- End Wrapper -->
+
+    </h:body>
+</html>

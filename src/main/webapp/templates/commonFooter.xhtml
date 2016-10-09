@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      >
+    <body>
+        <ui:composition>
+            <!-- Begin Footer -->
+            <div id="footer">
+                <p class="bottom-menu">
+                    <ui:repeat value="#{Menu.menuItems}" var="menuItem">
+                        <a href="#{menuItem.url}" title="#{menuItem.name}"><span>#{menuItem.name}</span></a>
+                    </ui:repeat>
+                </p>
+                <div id="bottom-logo"><a href="#" class="notext" title="Магазин Спецтехмонтаж">Спецтехмонаж. Design by: Игорь Калинчук</a></div>
+                <div class="cl">&nbsp;</div>
+            </div>
+            <!-- End Footer -->
+        </ui:composition>
+    </body>
+</html>

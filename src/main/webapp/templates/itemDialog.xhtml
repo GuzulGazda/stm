@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition>
+                <a href="#" class="close_item"><img src="resources/img/close_pop.png" class="btn_close" title="Закрыть" alt="З" /></a>
+                <section id="product">
+                    <aside>
+                        <div class="title" style="color: yellow">#{Item.item.name}</div>
+                        <div class="img"><img src="resources/img/items/#{Item.item.imgFileName}" alt="URSA (рул) 7000х1200х50 (2шт)  М-11тепло-звукоиз"></img></div>
+                    </aside>
+                    <div class="description">#{Item.item.description}</div>
+                    <div class="cost">Цена: <span>
+                            <h:outputText value="#{Item.item.price_1 / 100}">
+                                <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+                            </h:outputText>
+                        </span></div>
+                </section>
+        </ui:composition>
+    </body>
+</html>
