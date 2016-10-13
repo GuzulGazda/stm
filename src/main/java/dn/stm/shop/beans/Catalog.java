@@ -5,10 +5,9 @@ import dn.stm.shop.model.Item;
 import dn.stm.shop.model.ItemGroup;
 import dn.stm.shop.model.ItemUnit;
 import dn.stm.shop.model.PriceList;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,10 +51,10 @@ public class Catalog implements Serializable {
     }
 
     private void loadCatalog() {
-
-        System.out.println("LOAD CATALOG FROM FILE");
-        try (FileInputStream fis = new FileInputStream(new File(FILE_NAME))) {
-            Workbook workbook = WorkbookFactory.create(fis);
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        try (InputStream inputStream = classLoader.getResourceAsStream(FILE_NAME)) {
+            System.out.println("");
+            Workbook workbook = WorkbookFactory.create(inputStream);
 //            if (FILE_NAME.toLowerCase().endsWith("xlsx")) {
 //                workbook = new XSSFWorkbook(fis);
 //
@@ -92,7 +91,7 @@ public class Catalog implements Serializable {
         }
         LOGGER.log(Level.INFO, "Catalog loaded. Number of groups:  {0}, number of items is: {1}", new Object[]{GROUP_COUNTER, ITEM_COUNTER});
         LOGGER.log(Level.INFO, "\t\t. Prce list contains:  {0} items, and {1} groups", new Object[]{priceList.getNumOfItems(), priceList.getNumOfGroups()});
-        
+
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("priceList", priceList);
     }
 
