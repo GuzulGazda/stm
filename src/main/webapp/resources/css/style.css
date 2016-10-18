@@ -77,9 +77,14 @@ h1, h2, h3, h4 { font-family: Verdana, arial, sans-serif; }
 
 h1#logo { float: left; display: inline; padding-top: 13px; }
 h1#logo a { width: 270px; height: 26px; background: url('../../resources/img/logo_b.png') no-repeat 0 0; display: block; }
-
-#search { float: right; display: inline; width: 281px; }
-#search form { width: 281px; height: 35px; background: url('../../resources/img/search-bg.png') no-repeat 0 0; margin-bottom: 3px; }
+#basket{
+    width: 80px;
+    float: right;
+    font-weight: bold;
+    color: red;
+}
+#search { overflow: auto; float: right; display: inline; width: 331px; }
+#search form { width: 251px; float: left; height: 35px; background: url('../../resources/img/search-bg.png') no-repeat 0 0; margin-bottom: 3px;}
 #search input { background: none; border: none; float: left; display: inline; font-family: arial, sans-serif;  }
 #search .field { width: 170px; font-size: 11px; color: #4e4e4e; line-height: 16px; height: 16px;  padding: 10px 14px 9px; }
 #search .search-button { width: 33px; height: 35px; font-size: 0; line-height: 0; text-indent: -4000px; background: url('../../resources/img/search-button.png') no-repeat 0 8px; cursor: pointer; }

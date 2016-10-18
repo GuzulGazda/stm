@@ -3,7 +3,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      >
+
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
     <body>
         <ui:composition>
             <!-- Begin Top Navigation -->
@@ -22,7 +23,8 @@
                 <!-- Begin Search -->
                 <div id="search">
                     <form method="get" action="catalog.xhtml" id="search_form">
-                        &nbsp;&nbsp;&nbsp;<a href="#order-box" class="order-window"><img src="resources/img/basket.png" title="Корзина"/></a>
+                        &nbsp;&nbsp;&nbsp;
+
                         <input type="text" value="#{Search.searchString}" title="Поиск..." name="search" class="blink field search" />
                         <input type="hidden" name="page" value="1" />
                         <input type="hidden" name="sort" value="#{CatalogController.sort}" />
@@ -30,6 +32,10 @@
 
                         <div class="cl">&nbsp;</div>
                     </form>
+                    <div id="basket" >
+                        <a href="#order-box" class="order-window"><img src="resources/img/basket.png" title="Корзина"/></a>
+                        <h:outputText id="itemAmount" value="#{Order.overallAmount}"/>
+                    </div>
                 </div>
                 <div id="korzina">
 

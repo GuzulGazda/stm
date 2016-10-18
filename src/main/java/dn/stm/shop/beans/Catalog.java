@@ -40,15 +40,15 @@ public class Catalog implements Serializable {
 
     private static final int COLUMN_NAME = 0;
     private static final int COLUMN_DESCRIPTION = 1;
-    private static final int COLUMN_ID = 2;
-    private static final int COLUMN_PARENT_ID = 3;
-    private static final int COLUMN_UNIT = 4;
-    private static final int COLUMN_PRICE_1 = 5;
-    private static final int COLUMN_PRICE_2 = 6;
-    private static final int COLUMN_PRICE_3 = 7;
-    private static final int COLUMN_IMG = 8;
+    private static final int COLUMN_ID = 5;
+    private static final int COLUMN_PARENT_ID = 6;
+    private static final int COLUMN_UNIT = 7;
+    private static final int COLUMN_PRICE_1 = 8;
+    private static final int COLUMN_PRICE_2 = 9;
+    private static final int COLUMN_PRICE_3 = 10;
+    private static final int COLUMN_IMG = 13;
 
-    private final String FILE_NAME = "17102016.XLSX";
+    private final String FILE_NAME = "18102016.XLSX";
 
     // Variables
     private final List<Item> allItems = new ArrayList<>();          // all items in catalog
@@ -57,7 +57,6 @@ public class Catalog implements Serializable {
     private final List<ItemGroup> groups = new ArrayList<>();       // groups that belnong to first level
 
     // Getters
-
     public List<Item> getItems() {
         return items;
     }
@@ -73,9 +72,7 @@ public class Catalog implements Serializable {
     public List<ItemGroup> getAllGroups() {
         return allGroups;
     }
-    
-    
-    
+
     @PostConstruct
     public void init() {
         loadCatalog();
@@ -83,6 +80,7 @@ public class Catalog implements Serializable {
 
     private void loadCatalog() {
         ClassLoader classLoader = this.getClass().getClassLoader();
+        String name = "";
         try (InputStream inputStream = classLoader.getResourceAsStream(FILE_NAME)) {
             Workbook workbook = WorkbookFactory.create(inputStream);
 //            if (FILE_NAME.toLowerCase().endsWith("xlsx")) {
@@ -102,9 +100,20 @@ public class Catalog implements Serializable {
             Iterator<Row> rowIterator = sheet.iterator();
             // Traversing over each row of XLSX file 
 //            boolean startReadingData = false;
+            boolean read = false;
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                if (row.getRowNum() < 2) {
+                try {
+                    name = row.getCell(COLUMN_NAME).getStringCellValue();
+                } catch (Exception e) {
+                }
+
+                if ("СТРОЙМАТЕРИАЛЫ".equalsIgnoreCase(name)) {
+                    read = true;
+                    System.out.println("FOIND!!!");
+                    continue;
+                }
+                if (!read) {
                     continue;
                 }
                 // For each row, iterate through each columns 
@@ -221,7 +230,7 @@ public class Catalog implements Serializable {
         if (MAIN_GROUP_ID.equals(groupId)) {
             return sorted(allItems, sortField, sortAscending);
         }
-        System.out.println("HERE IS ERROR: groupId =  " + groupId + ", sortField = " + sortField + ", sortAsc = " + sortAscending );
+        System.out.println("HERE IS ERROR: groupId =  " + groupId + ", sortField = " + sortField + ", sortAsc = " + sortAscending);
         return sorted(getGroupById(groupId).getItems(), sortField, sortAscending);
     }
 
@@ -233,7 +242,6 @@ public class Catalog implements Serializable {
 //        }
 //        return getGroupById(groupId).getGroups();
 //    }
-
     List<Item> getSearchItemList(String search, String sortField, boolean sortAscending) {
         Set<Item> resultSet = new HashSet<>();
 
@@ -357,8 +365,8 @@ public class Catalog implements Serializable {
     }
 
     private ItemGroup getGroupById(String id) {
-        if(id == null){
-            
+        if (id == null) {
+
         }
         for (ItemGroup group : allGroups) {
             if (group.getId().equals(id)) {
