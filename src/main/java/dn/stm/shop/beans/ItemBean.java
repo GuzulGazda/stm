@@ -1,8 +1,9 @@
 package dn.stm.shop.beans;
 
 import dn.stm.shop.model.Item;
-import dn.stm.shop.model.PriceList;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -12,6 +13,8 @@ import javax.faces.bean.RequestScoped;
 @RequestScoped
 public class ItemBean implements Serializable {
 
+    private static final Logger LOGGER = Logger.getLogger(ItemBean.class.getName());
+
     @ManagedProperty(value = "#{Catalog}")
     private Catalog catalog;
 
@@ -20,7 +23,7 @@ public class ItemBean implements Serializable {
     }
 
     @ManagedProperty(value = "#{param.itemId}")
-    private int itemId;
+    private String itemId;
     private Item item;
 
     @PostConstruct
@@ -28,20 +31,21 @@ public class ItemBean implements Serializable {
 
     }
 
-    public int getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(int itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 
     public Item getItem() {
-        if (itemId == 0) {
+        if (itemId == null || itemId.isEmpty()) {
             return null;
         }
-        PriceList priceList = catalog.getPriceList();
-        item = priceList.getItemById(itemId);
+        LOGGER.log(Level.SEVERE, "Get item with id {0}", itemId);
+
+        item = catalog.getItemById(itemId);
         return item;
     }
 

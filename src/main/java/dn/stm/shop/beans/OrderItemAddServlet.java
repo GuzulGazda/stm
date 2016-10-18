@@ -31,8 +31,7 @@ public class OrderItemAddServlet extends HttpServlet {
 
         response.setContentType("text/plain");
         try {
-            int itemId = Integer.parseInt(itemIdParam);
-            Item item = catalog.getItemById(itemId);
+            Item item = catalog.getItemById(itemIdParam);
             order.add(item);
             int newOrderAmount = order.getOverallAmount();
             response.getWriter().write(Integer.toString(newOrderAmount));

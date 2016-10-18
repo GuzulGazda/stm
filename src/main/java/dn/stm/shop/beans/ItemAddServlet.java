@@ -36,8 +36,7 @@ public class ItemAddServlet extends HttpServlet {
             
             System.out.println("\t\tDELETE ITEM WITH ID:  " + itemToDeleteParam);
             try {
-                int itemId = Integer.parseInt(itemToDeleteParam);
-                orderBean.removeItemById(itemId);
+                orderBean.removeItemById(itemToDeleteParam);
                 System.out.println("\t\t DELETE OK Amount is " + orderBean.getOverallAmount());
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
@@ -53,8 +52,7 @@ public class ItemAddServlet extends HttpServlet {
         if (amountParam == null || amountParam.isEmpty()) {
             // return current amount for this item
             try {
-                int itemId = Integer.parseInt(itemIdParam);
-                int oldAmount = orderBean.getAmountForItem(itemId);
+                int oldAmount = orderBean.getAmountForItem(itemIdParam);
                 response.getWriter().write(Integer.toString(oldAmount));
             } catch (NumberFormatException | IOException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
@@ -63,9 +61,8 @@ public class ItemAddServlet extends HttpServlet {
 
         }
         try {
-            int itemId = Integer.parseInt(itemIdParam);
             int amount = Integer.parseInt(amountParam);
-            orderBean.setItemAmount(itemId, amount);
+            orderBean.setItemAmount(itemIdParam, amount);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage());
         }

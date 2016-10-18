@@ -28,10 +28,10 @@ $(document).ready(function () {
         return false;
     });
     // ============  Add item to order end =====================//
-//    $('ul.nav-list #').parent().children('ul.tree').toggle(0);
+    $('ul.nav-list #').parent().children('ul.tree').toggle(0);
     // Expand selected group
     var selectedGroup = $('#groupId').val();
-    $('ul.nav-list #' + selectedGroup + '').parent().children('ul.tree').toggle(0);
+//    $('ul.nav-list #' + selectedGroup + '').parent().children('ul.tree').toggle(0);
 });
 
 function regisryOrderPopup() {

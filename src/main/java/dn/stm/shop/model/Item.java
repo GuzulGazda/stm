@@ -8,8 +8,8 @@ import java.io.Serializable;
  */
 public class Item implements Serializable {
 
-    private int id;
-    private int groupId;
+    private String id;
+    private String groupId;
     private String name;
     private ItemUnit itemUnit;
     private int price_1;
@@ -20,7 +20,7 @@ public class Item implements Serializable {
     private boolean ordered;
     private int amount;
 
-    public Item(int id, int groupId, String name, ItemUnit itemUnit,
+    public Item(String id, String groupId, String name, ItemUnit itemUnit,
             int price_1, int price_2, int price_3, String description, String imgFileName) {
         this.id = id;
         this.groupId = groupId;
@@ -36,19 +36,19 @@ public class Item implements Serializable {
         this.amount = 0;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getGroupId() {
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 

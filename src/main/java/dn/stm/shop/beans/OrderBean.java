@@ -41,7 +41,7 @@ public class OrderBean implements Serializable {
         // do not add item to order if item is already in order
         boolean exists = false;
         for (Item orderedItem : orderedItems) {
-            if (orderedItem.getId() == item.getId()) {
+            if (orderedItem.getId().equals(item.getId())) {
                 LOGGER.log(Level.SEVERE, "Item {0} is already in a order. Scip adding. ", item);
                 exists = true;
                 break;
@@ -55,10 +55,10 @@ public class OrderBean implements Serializable {
         }
     }
 
-    public void removeItemById(int itemId) {
+    public void removeItemById(String itemId) {
         Item itemToRemove = null;
         for (Item orderedItem : orderedItems) {
-            if (orderedItem.getId() == itemId) {
+            if (orderedItem.getId().equals(itemId)) {
                 itemToRemove = orderedItem;
                 break;
             }
@@ -87,19 +87,19 @@ public class OrderBean implements Serializable {
         return result;
     }
 
-    public void setItemAmount(int itemId, int amount) {
+    public void setItemAmount(String itemId, int amount) {
         System.out.println("OrderBean:: SetItemAmount");
         for (Item orderedItem : orderedItems) {
-            if (orderedItem.getId() == itemId) {
+            if (orderedItem.getId().equals(itemId)) {
                 orderedItem.setAmount(amount);
                 return;
             }
         }
     }
 
-    public int getAmountForItem(int itemId) {
+    public int getAmountForItem(String itemId) {
         for (Item orderedItem : orderedItems) {
-            if (orderedItem.getId() == itemId){
+            if (orderedItem.getId().equals(itemId)){
                 return orderedItem.getAmount();
             }
         }

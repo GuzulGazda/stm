@@ -44,13 +44,12 @@ public class CatalogController implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(Catalog.class.getName());
 
     // Constants
-    private final int PAGGING_BUTTONS_DIV_WIDTH = 786;
-    private final int rowsPerPage = 15;
+//    private final int PAGGING_BUTTONS_DIV_WIDTH = 786;
+    private final int rowsPerPage = 30;
 
     // items to show
     private List<Item> itemList;
-    private int groupId = 1;        // defautl value - show all items in catalog
-//    private int categoryId;
+    private String groupId = Catalog.MAIN_GROUP_ID;        // defautl value - show all items in catalog
 
     // Paging.
     private int totalRows;
@@ -64,9 +63,7 @@ public class CatalogController implements Serializable {
 
     @PostConstruct
     private void init() {
-        System.out.println("CatalogContoller:: init");
-        // Set default values 
-//        groupId = 0;    // show all items in catalog
+        // Set default values
         currentPage = 1;
         this.showPagination = true;
 
@@ -86,7 +83,6 @@ public class CatalogController implements Serializable {
             int lastItem = Math.min(firstItem + rowsPerPage - 1, totalRows);
             title += " Показаны товары с " + firstItem + " по " + lastItem;
         }
-//        System.out.println("INIT OK Sort is "  + sortBean.getSortField());
     }
 
     private void readParams() {
@@ -99,14 +95,15 @@ public class CatalogController implements Serializable {
         String itemToAdd = req.getParameter("itemToAdd");
         String searchParam = req.getParameter("search");
 
+        LOGGER.log(Level.INFO, "Params are: sort = {0}, page = {1}, groupId = {2}, search {3}= ", new Object[]{sortParam, pageParam, groupIdParam, searchParam});
+
         // save search string in session
         if (searchParam != null && !searchParam.isEmpty()) {
             searchBean.setSearchString(searchParam);
-        } 
+        }
 
         if (itemToAdd != null && !itemToAdd.isEmpty()) {
-            int itemToAddId = Integer.parseInt(itemToAdd);
-            order.add(catalog.getItemById(itemToAddId));
+            order.add(catalog.getItemById(itemToAdd));
         }
 
         // sort param
@@ -127,10 +124,10 @@ public class CatalogController implements Serializable {
 
         // groupId param
         if (groupIdParam != null && !groupIdParam.isEmpty()) {
+            // TODO Fix this 
             try {
-                groupId = Integer.parseInt(groupIdParam);
-                if (groupId != 0) {
-                    System.out.println("\t Search String is null!!!!");
+                groupId = groupIdParam;
+                if (groupId == null || groupId.isEmpty()) {
                     searchBean.setSearchString("");
                 }
 
@@ -145,21 +142,24 @@ public class CatalogController implements Serializable {
         // check if search
         String search = searchBean.getSearchString();
         if (search != null && !search.isEmpty()) {
-            System.out.println("DO SEARCH!!!");
             title = "Результаты поиска по слову \"" + search + "\" .";
             return catalog.getSearchItemList(search, sort, sortAscending);
-        } else if (groupId > 0 ){
+        } else if (groupId != null && !groupId.isEmpty()) {
             title = "Товары раздела \"" + catalog.getGroupNameById(groupId) + "\" .";
         }
-        return catalog.getGroupList(groupId, sort, sortAscending);
+        System.out.println("IHOR : Get All items  for groupId " + groupId);
+        if (groupId == Catalog.MAIN_GROUP_ID) {
+            System.out.println("\nReturn " + catalog.getAllItems().size() + " items");
+            return catalog.getAllItems();
+
+        }
+        return catalog.getGroupItemsListById(groupId, sort, sortAscending);
     }
 
     private void preparePaginationButtons() {
-        System.out.println("CatalogController: preparePaginationButtons ");
         paginationButtons = new ArrayList<>();
         String label;
         int buttonPage;
-        System.out.println("Total");
         String buttonClassName;
 
         if (totalPages < 2) {
@@ -248,7 +248,7 @@ public class CatalogController implements Serializable {
         return itemList;
     }
 
-    public int getGroupId() {
+    public String getGroupId() {
         return groupId;
     }
 

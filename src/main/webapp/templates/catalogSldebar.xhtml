@@ -20,35 +20,41 @@
                         <h:panelGroup rendered="#{!Search.active}">
                             <input type="hidden" name="groupId" value="#{CatalogController.groupId}" />
                             <input type="hidden" name="page" value="1" />
-                            <input type="submit" value="Применить" />
+                            <input type="submit" value="Применить" style="color:#93b82e; border: 0px; font-weight: bold; font-size: 14px;"/>
                         </h:panelGroup>
                         <h:panelGroup rendered="#{Search.active}">
                             <input type="hidden" name="search" value="#{Search.searchString}" />
                             <input type="hidden" name="page" value="1" />
-                            <input type="submit" value="Применить" />
+                            <input type="submit" value="Применить"  style="color:#93b82e; border: 0px; font-weight: bold; font-size: 14px;"/>
                         </h:panelGroup>
-
                     </form>
-
                 </div>
                 <div class="sidebar_base"></div>
             </div>
             <div class="sidebar">
                 <div class="sidebar_top"></div>
                 <div class="sidebar_item">
-                    <h2>Каталог товаров</h2>
-                    <ul class="nav nav-list">
-                        <ui:repeat value="#{Catalog.priceList.categorys}" var="category" >
-                            <li><label categoryId="#{category.id}" class="tree-toggle nav-header"><h4>#{category.name}</h4></label>
-                                <ui:repeat value="#{category.itemGroups}" var="itemGroup">
+                    <h1>Каталог товаров</h1>
+                    <br/>
+                    <ul class="nav nav-list sidebar-list">
+                        <ui:repeat value="#{Catalog.groups}" var="group" >
+                            <li>
+                                <h:link title="#{group.name}" outcome="catalog" rendered="#{CatalogController.groupId != group.id}">
+                                    <f:param name="groupId" value="#{group.id}" />
+                                    <f:param name="page" value="1" />
+                                    <f:param name="sort" value="#{CatalogController.sort}" />
+                                    <label groupId="#{group.id}" title="#{group.name}"  class="tree-toggle nav-header unselectedTopGroup"><h4>#{group.name}</h4></label>
+                                </h:link>
+                                <h:outputLabel class="selectedTopGroup" value="#{group.name}" title="#{group.name}" rendered="#{CatalogController.groupId == group.id}"/>
+                                <ui:repeat value="#{group.groups}" var="itemGroup">
                                     <ul class="nav nav-list tree" id="#{itemGroup.id}">
                                         <li>
-                                            <h:link value="#{itemGroup.name}" title="#{itemGroup.name}" outcome="catalog" rendered="#{CatalogController.groupId != itemGroup.id}">
+                                            <h:link value="&nbsp;&nbsp;#{itemGroup.name}" title="#{itemGroup.name}" outcome="catalog" rendered="#{CatalogController.groupId != itemGroup.id}">
                                                 <f:param name="groupId" value="#{itemGroup.id}" />
                                                 <f:param name="page" value="1" />
                                                 <f:param name="sort" value="#{CatalogController.sort}" />
                                             </h:link>
-                                            <h:outputLabel value="#{itemGroup.name}" title="#{itemGroup.name}" rendered="#{CatalogController.groupId == itemGroup.id}" style="text-overflow: ellipsis; width: 230px;"/>                                                
+                                            <h:outputLabel class="selectedGroup" value="&nbsp;&nbsp;#{itemGroup.name}" title="#{itemGroup.name}" rendered="#{CatalogController.groupId == itemGroup.id}"/>                                                
                                         </li>
                                     </ul>
                                 </ui:repeat>

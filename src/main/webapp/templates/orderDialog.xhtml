@@ -51,7 +51,7 @@
                         // Getting the variable's value from a link 
                         var itemId = $(this).attr('itemId');
                         $.get('OrderChangeServlet', {
-                            itemToDelete: itemId,
+                            itemToDelete: itemId
                         }, function (responseText) {
                             parsedJSON = JSON.parse(responseText);
                             var newOrderCost = '' + parsedJSON[0] / 100 + ',00';
@@ -61,6 +61,9 @@
                             $('#overallCost').text(newOrderCost.toString());
 
                             $('#ajaxOrderChangeServletResponse').text(newOrderCost);
+                            $('#itemBuy' + itemId).html('<a href="#" itemId="' + itemId + '" class="item-add">Купить</a>');
+                            regisryOrderPopup();
+                            registryItemPopup();
                         });
 
                         $.ajax({
@@ -68,7 +71,6 @@
                             url: "templates/orderDialog.xhtml?itemId=" + itemId,
                             dataType: 'html',
                             success: function (html) {
-                                alert(html);
                                 $('.order-popup').html(html);
                             },
                             error: function () {
@@ -120,12 +122,32 @@
                     <h:message for="item#{item.id}" style="color:red" />
                 </h:column>
             </h:dataTable>
-            <br/>
+            <h3>
             Стоимость заказа: 
             <h:outputText id="overallCost" value="#{Order.overallCost / 100}">
                 <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
             </h:outputText>
             <h:outputText value=" руб." />
+            </h3>
+            <form  rendered="#{Order.overallAmount > 0}">
+                <ul class="form-style">
+                    <li>
+                        <label>Введите имя <span class="required">*</span></label>
+                        <input type="text" name="field1" class="field-divided" placeholder="Ваше имя" />
+                    </li>
+                    <li>
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" name="field3" class="field-long" />
+                    </li>
+                    <li>
+                        <label>Дополнительное сообщение <span class="required">*</span></label>
+                        <textarea name="field5" id="field5" class="field-long field-textarea"></textarea>
+                    </li>
+                    <li>
+                        <input type="submit" value="Отправить" />
+                    </li>
+                </ul>
+            </form>
         </ui:composition>
     </body>
 </html>

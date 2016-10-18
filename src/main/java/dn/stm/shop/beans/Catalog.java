@@ -1,10 +1,8 @@
 package dn.stm.shop.beans;
 
-import dn.stm.shop.model.Category;
 import dn.stm.shop.model.Item;
 import dn.stm.shop.model.ItemGroup;
 import dn.stm.shop.model.ItemUnit;
-import dn.stm.shop.model.PriceList;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,14 +10,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -32,28 +31,59 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 @SessionScoped
 public class Catalog implements Serializable {
 
+    // Constants
     private static final Logger LOGGER = Logger.getLogger(Catalog.class.getName());
 
-    private final String FILE_NAME = "price_stm.xls";
-    private static int GROUP_COUNTER = 1;
-    private static int ITEM_COUNTER = 200;
-    private ItemGroup currentItemGroup;
+    private static final int SHEET = 0;
 
-    private final PriceList priceList = new PriceList();
+    public static final String MAIN_GROUP_ID = "00016";
 
-    private static Object lock = new Object();
-    private static volatile Catalog instance = null;
+    private static final int COLUMN_NAME = 0;
+    private static final int COLUMN_DESCRIPTION = 1;
+    private static final int COLUMN_ID = 2;
+    private static final int COLUMN_PARENT_ID = 3;
+    private static final int COLUMN_UNIT = 4;
+    private static final int COLUMN_PRICE_1 = 5;
+    private static final int COLUMN_PRICE_2 = 6;
+    private static final int COLUMN_PRICE_3 = 7;
+    private static final int COLUMN_IMG = 8;
 
+    private final String FILE_NAME = "17102016.XLSX";
+
+    // Variables
+    private final List<Item> allItems = new ArrayList<>();          // all items in catalog
+    private final List<ItemGroup> allGroups = new ArrayList<>();    // all groups in catalog
+    private final List<Item> items = new ArrayList<>();             // items that belong to first level
+    private final List<ItemGroup> groups = new ArrayList<>();       // groups that belnong to first level
+
+    // Getters
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public List<ItemGroup> getGroups() {
+        return groups;
+    }
+
+    public List<Item> getAllItems() {
+        return allItems;
+    }
+
+    public List<ItemGroup> getAllGroups() {
+        return allGroups;
+    }
+    
+    
+    
     @PostConstruct
     public void init() {
-        System.out.println("Catalog:: init");
         loadCatalog();
     }
 
     private void loadCatalog() {
         ClassLoader classLoader = this.getClass().getClassLoader();
         try (InputStream inputStream = classLoader.getResourceAsStream(FILE_NAME)) {
-            System.out.println("");
             Workbook workbook = WorkbookFactory.create(inputStream);
 //            if (FILE_NAME.toLowerCase().endsWith("xlsx")) {
 //                workbook = new XSSFWorkbook(fis);
@@ -66,7 +96,7 @@ public class Catalog implements Serializable {
 //            }
             int numOfSheets = workbook.getNumberOfSheets();
 
-            Sheet sheet = workbook.getSheetAt(0);
+            Sheet sheet = workbook.getSheetAt(SHEET);
 
             // Get iterator to all the rows in current sheet 
             Iterator<Row> rowIterator = sheet.iterator();
@@ -74,12 +104,11 @@ public class Catalog implements Serializable {
 //            boolean startReadingData = false;
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                // For each row, iterate through each columns 
-
-                // Scip empty rows
-                if (row.getCell(2) == null) {
+                if (row.getRowNum() < 2) {
                     continue;
                 }
+                // For each row, iterate through each columns 
+
                 parseRow(row);
             }
         } catch (FileNotFoundException ex) {
@@ -89,57 +118,74 @@ public class Catalog implements Serializable {
         } catch (InvalidFormatException | EncryptedDocumentException ex) {
             LOGGER.log(Level.SEVERE, "Error during parse xsl {0}", ex.getMessage());
         }
-        LOGGER.log(Level.INFO, "Catalog loaded. Number of groups:  {0}, number of items is: {1}", new Object[]{GROUP_COUNTER, ITEM_COUNTER});
-        LOGGER.log(Level.INFO, "\t\t. Prce list contains:  {0} items, and {1} groups", new Object[]{priceList.getNumOfItems(), priceList.getNumOfGroups()});
-
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("priceList", priceList);
     }
 
     private void parseRow(Row row) {
         Iterator<Cell> cellIterator = row.cellIterator();
+        double someDouble;
         try {
-            if (row.getCell(3).getNumericCellValue() == 0.0) {
+            someDouble = row.getCell(COLUMN_PRICE_1).getNumericCellValue();
+            if (someDouble == 0.0) {
                 parseGroupRow(row);
             } else {
                 parseItemRow(row);
             }
-        } catch (Exception e) {
-        }
 
+        } catch (Exception e) {
+            parseGroupRow(row);
+        }
     }
 
     private void parseGroupRow(Row row) {
-        String groupName = row.getCell(1).getStringCellValue().trim();
-        String categoryName = row.getCell(2).getStringCellValue().trim();
-        if (categoryName.isEmpty()) {
-            return;
+        try {
+            String groupName = row.getCell(COLUMN_NAME).getStringCellValue().trim();
+            String groupId = row.getCell(COLUMN_ID).getStringCellValue().trim();
+            String parentId = row.getCell(COLUMN_PARENT_ID).getStringCellValue().trim();
+            ItemGroup itemGroup = new ItemGroup(groupId, parentId, groupName);
+
+            if (MAIN_GROUP_ID.equals(parentId)) {
+                groups.add(itemGroup);
+            } else {
+                ItemGroup parentGroup = getGroupById(parentId);
+                parentGroup.add(itemGroup);
+            }
+            allGroups.add(itemGroup);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
         }
-        Category category = priceList.getCategoryByName(categoryName);
-        ItemGroup itemGroup = new ItemGroup(GROUP_COUNTER++, groupName);
-        category.add(itemGroup);
-        currentItemGroup = itemGroup;
     }
 
     private void parseItemRow(Row row) {
         try {
-            String itemName = row.getCell(1).getStringCellValue().trim();
-            String unitName = row.getCell(2).getStringCellValue().trim();
+            String itemName = row.getCell(COLUMN_NAME).getStringCellValue();
+            String itemId = row.getCell(COLUMN_ID).getStringCellValue().trim();
+            String parentId = row.getCell(COLUMN_PARENT_ID).getStringCellValue().trim();
+            String unitName = row.getCell(COLUMN_UNIT).getStringCellValue().trim();
             ItemUnit itemUnit = ItemUnit.fromString(unitName);
-            double price_01 = row.getCell(3).getNumericCellValue();
-            double price_02 = row.getCell(4).getNumericCellValue();
-            double price_03 = row.getCell(5).getNumericCellValue();
-            String description;
+            double price_01 = row.getCell(COLUMN_PRICE_1).getNumericCellValue();
+            double price_02 = price_01;
+            double price_03 = price_01;
             try {
-                description = row.getCell(6).getStringCellValue().trim();
+                price_02 = row.getCell(COLUMN_PRICE_2).getNumericCellValue();
+                price_03 = row.getCell(COLUMN_PRICE_2).getNumericCellValue();
+            } catch (Exception e) {
+                // use price_01 for all prices
+            }
 
+            String description = "";
+            try {
+                description = row.getCell(COLUMN_DESCRIPTION).getStringCellValue().trim();
             } catch (Exception e) {
                 // TODO Log oboun description error
+            }
+            if (description == null || description.isEmpty()) {
+                // TODO move String to constant
                 description = "Здесь должно быть описание для товара \"" + itemName + "\"";
             }
 
             String imgFileName;
             try {
-                imgFileName = row.getCell(7).getStringCellValue().trim();
+                imgFileName = row.getCell(COLUMN_IMG).getStringCellValue().trim();
 
             } catch (Exception e) {
                 // TODO Log oboun description error
@@ -150,90 +196,59 @@ public class Catalog implements Serializable {
             int cost_02 = (int) price_02 * 100;
             int cost_03 = (int) price_03 * 100;
 
-            Item item = new Item(ITEM_COUNTER++, currentItemGroup.getId(), itemName, itemUnit,
+            Item item = new Item(itemId, parentId, itemName, itemUnit,
                     cost_01, cost_02, cost_03, description, imgFileName);
-            currentItemGroup.add(item);
+
+            if (MAIN_GROUP_ID.equals(parentId)) {
+                items.add(item);
+            } else {
+                ItemGroup parentGroup = getGroupById(parentId);
+                parentGroup.add(item);
+            }
+            allItems.add(item);
         } catch (Exception e) {
             // TODO log to file
         }
     }
 
-    public PriceList getPriceList() {
-        return priceList;
-    }
-
     private List<Item> getAllItems(String sortField, boolean sortAscending) {
-        System.out.println("Catalog::: Get Item List: sortField: " + sortField + ", sortAsc = " + sortAscending);
-        List<Item> allItems = new ArrayList<>();
-        List<Category> categorys = priceList.getCategorys();
-        for (Category category : categorys) {
-            allItems.addAll(category.getAllItemsUnsorted());
-        }
         return sorted(allItems, sortField, sortAscending);
     }
 
-    List<Item> getGroupList(int groupId, String sortField, boolean sortAscending) {
-        System.out.println("Catalog::: getGrpoupList " + groupId);
+    List<Item> getGroupItemsListById(String groupId, String sortField, boolean sortAscending) {
 
         // If groupId == 1 - show all items from catalog
-        if (groupId == 1) {
-            return getAllItems(sortField, sortAscending);
+        if ("1".equals(groupId)) {
+            return items;
         }
-
-        List<Item> items = new ArrayList<>();
-        List<Category> categorys = priceList.getCategorys();
-        for (Category category : categorys) {
-            if (category.getId() == groupId) {
-                return sorted(category.getAllItemsUnsorted(), sortField, sortAscending);
-            }
-            List<ItemGroup> itemGroups = category.getItemGroups();
-            for (ItemGroup itemGroup : itemGroups) {
-                if (itemGroup.getId() == groupId) {
-                    return sorted(itemGroup.getItems(), sortField, sortAscending);
-                }
-            }
-        }
-        LOGGER.log(Level.SEVERE, "Cannot find group for groupId {}. ", groupId);
-        return new ArrayList<>();
+        return getGroupById(groupId).getItems();
     }
 
-    List<Item> getCategoryList(int categoryId, String sortField, boolean sortAscending) {
-        System.out.println("Catalog::: getCategoryList " + categoryId);
-        List<Item> items = new ArrayList<>();
-        List<Category> categorys = priceList.getCategorys();
-        for (Category category : categorys) {
-            if (category.getId() == categoryId) {
-                List<ItemGroup> itemGroups = category.getItemGroups();
-                for (ItemGroup itemGroup : itemGroups) {
-                    items.addAll(itemGroup.getItems());
-                }
-                break;
-            }
+    List<ItemGroup> getGroupGroupsListById(String groupId, String sortField, boolean sortAscending) {
+
+        // If groupId == 1 - show all items from catalog
+        if ("1".equals(groupId)) {
+            return groups;
         }
-        return sorted(items, sortField, sortAscending);
+        return getGroupById(groupId).getGroups();
     }
 
     List<Item> getSearchItemList(String search, String sortField, boolean sortAscending) {
-        List<Item> allItems = getAllItems(sortField, sortAscending);
-        List<Item> result = new ArrayList<>();
+        Set<Item> resultSet = new HashSet<>();
 
-        List<Category> categorys = priceList.getCategorys();
-        for (Category category : categorys) {
-            List<ItemGroup> groups = category.getItemGroups();
-            for (ItemGroup group : groups) {
-                if (group.getName().toLowerCase().contains(search.toLowerCase())) {
-                    result.addAll(group.getItems());
-                } else {
-                    List<Item> items = group.getItems();
-                    for (Item item : items) {
-                        if (item.getName().toLowerCase().contains(search.toLowerCase())) {
-                            result.add(item);
-                        }
-                    }
-                }
+        for (Item item : allItems) {
+            if (item.getName().toLowerCase().contains(search.toLowerCase())) {
+                resultSet.add(item);
             }
         }
 
+        for (ItemGroup group : allGroups) {
+            if (group.getName().toLowerCase().contains(search.toLowerCase())) {
+                resultSet.addAll(group.getItems());
+            }
+        }
+        List<Item> result = new ArrayList<>();
+        result.addAll(resultSet);
         return sorted(result, sortField, sortAscending);
     }
 
@@ -243,10 +258,8 @@ public class Catalog implements Serializable {
             case "name":
                 if (sortAscending) {
                     Collections.sort(items, ItemNameComparatorAsc);
-                    System.out.println("sorted ASC");
                 } else {
                     Collections.sort(items, ItemNameComparatorDesc);
-                    System.out.println("sorted DESC");
                 }
                 break;
             case "price":
@@ -315,36 +328,44 @@ public class Catalog implements Serializable {
         }
     };
 
-    String getGroupNameById(int groupId) {
-        List<Category> categorys = priceList.getCategorys();
-        for (Category category : categorys) {
-            List<ItemGroup> itemGroups = category.getItemGroups();
-            for (ItemGroup itemGroup : itemGroups) {
-                if (itemGroup.getId() == groupId) {
-                    return itemGroup.getName();
-                }
-            }
+    String getGroupNameById(String groupId) {
+        ItemGroup group = getGroupById(groupId);
+        if (group != null) {
+
+            return group.getName();
+        } else {
+            return null;
         }
-        return null;
     }
 
-    String getCategoryNameById(int categoryId) {
-        List<Category> categorys = priceList.getCategorys();
-        for (Category category : categorys) {
-            if (category.getId() == categoryId) {
-                return category.getName();
-            }
-        }
-        return null;
-    }
-
-    Item getItemById(int itemId) {
-        List<Item> allItems = getAllItems("name", true);
-        for (Item item : allItems) {
-            if (item.getId() == itemId) {
+    Item getItemById(String id) {
+        Item result = null;
+        for (Item item : items) {
+            if (item.getId().equals(id)) {
                 return item;
             }
         }
+        for (ItemGroup group : groups) {
+            result = group.getItemById(id);
+            if (result != null) {
+                return result;
+            }
+        }
+        LOGGER.log(Level.SEVERE, "Item not found for Id {0}", id);
+        return null;
+    }
+
+    private ItemGroup getGroupById(String id) {
+        if(id == null){
+            
+        }
+        for (ItemGroup group : allGroups) {
+            if (group.getId().equals(id)) {
+                return group;
+            }
+        }
+        LOGGER.log(Level.SEVERE, "!!Group not found for Id {0}", id);
+        LOGGER.log(Level.SEVERE, "All Groups size is {0}", allGroups.size());
         return null;
     }
 
