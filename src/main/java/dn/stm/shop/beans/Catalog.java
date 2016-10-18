@@ -218,9 +218,10 @@ public class Catalog implements Serializable {
     List<Item> getGroupItemsListById(String groupId, String sortField, boolean sortAscending) {
 
         // If groupId == 1 - show all items from catalog
-        if ("1".equals(groupId)) {
-            return items;
+        if (MAIN_GROUP_ID.equals(groupId)) {
+            return sorted(allItems, sortField, sortAscending);
         }
+        System.out.println("HERE IS ERROR: groupId =  " + groupId + ", sortField = " + sortField + ", sortAsc = " + sortAscending );
         return sorted(getGroupById(groupId).getItems(), sortField, sortAscending);
     }
 
