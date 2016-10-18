@@ -221,17 +221,17 @@ public class Catalog implements Serializable {
         if ("1".equals(groupId)) {
             return items;
         }
-        return getGroupById(groupId).getItems();
+        return sorted(getGroupById(groupId).getItems(), sortField, sortAscending);
     }
 
-    List<ItemGroup> getGroupGroupsListById(String groupId, String sortField, boolean sortAscending) {
-
-        // If groupId == 1 - show all items from catalog
-        if ("1".equals(groupId)) {
-            return groups;
-        }
-        return getGroupById(groupId).getGroups();
-    }
+//    List<ItemGroup> getGroupGroupsListById(String groupId, String sortField, boolean sortAscending) {
+//
+//        // If groupId == 1 - show all items from catalog
+//        if ("1".equals(groupId)) {
+//            return groups;
+//        }
+//        return getGroupById(groupId).getGroups();
+//    }
 
     List<Item> getSearchItemList(String search, String sortField, boolean sortAscending) {
         Set<Item> resultSet = new HashSet<>();
