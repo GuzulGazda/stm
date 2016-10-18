@@ -125,6 +125,7 @@ public class CatalogController implements Serializable {
         // groupId param
         if (groupIdParam != null && !groupIdParam.isEmpty()) {
             // TODO Fix this 
+            searchBean.setSearchString("");
             try {
                 groupId = groupIdParam;
                 if (groupId == null || groupId.isEmpty()) {
