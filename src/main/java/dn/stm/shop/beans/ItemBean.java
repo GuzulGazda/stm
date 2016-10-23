@@ -2,7 +2,6 @@ package dn.stm.shop.beans;
 
 import dn.stm.shop.model.Item;
 import java.io.Serializable;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -43,8 +42,6 @@ public class ItemBean implements Serializable {
         if (itemId == null || itemId.isEmpty()) {
             return null;
         }
-        LOGGER.log(Level.SEVERE, "Get item with id {0}", itemId);
-
         item = catalog.getItemById(itemId);
         return item;
     }

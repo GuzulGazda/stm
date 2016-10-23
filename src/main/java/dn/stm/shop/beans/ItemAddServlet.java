@@ -6,6 +6,8 @@
 package dn.stm.shop.beans;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -22,29 +24,34 @@ public class ItemAddServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("ORDEF CHANGE SERVLET doGet");
         String itemIdParam = request.getParameter("itemId");
         String amountParam = request.getParameter("itemAmount");
         String itemToDeleteParam = request.getParameter("itemToDelete");
-        System.out.println("Params: itemId" + itemIdParam + ", amountParam: " + amountParam + ", itemToDlete:  " + itemToDeleteParam);
-
+        System.out.println("IHOR::::  amount= " + amountParam + ", id = " + itemIdParam + ", deleteId = " + itemToDeleteParam);
         OrderBean orderBean = (OrderBean) request.getSession().getAttribute("Order");
 
         response.setContentType("text/plain");
 
         if (itemToDeleteParam != null && !itemToDeleteParam.isEmpty()) {
-            
-            System.out.println("\t\tDELETE ITEM WITH ID:  " + itemToDeleteParam);
             try {
                 orderBean.removeItemById(itemToDeleteParam);
-                System.out.println("\t\t DELETE OK Amount is " + orderBean.getOverallAmount());
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
             response.getWriter().write("[");
-            response.getWriter().write(Integer.toString(orderBean.getOverallCost()));
+            response.getWriter().write("\"");
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setGroupingSeparator(' ');
+            DecimalFormat format = new DecimalFormat("#,###.00", symbols);
+            double newOrderCost = orderBean.getOverallCost();
+            if  (newOrderCost == 0.0){
+                response.getWriter().write("0,00");
+            } else {
+                response.getWriter().write(format.format(orderBean.getOverallCost()));
+            }
+            response.getWriter().write("\"");
             response.getWriter().write(",");
-            response.getWriter().write(Integer.toString(orderBean.getOverallAmount()));
+            response.getWriter().write(orderBean.getOrderedItemsCount());
             response.getWriter().write("]");
             return;
         }
@@ -52,8 +59,8 @@ public class ItemAddServlet extends HttpServlet {
         if (amountParam == null || amountParam.isEmpty()) {
             // return current amount for this item
             try {
-                int oldAmount = orderBean.getAmountForItem(itemIdParam);
-                response.getWriter().write(Integer.toString(oldAmount));
+                double oldAmount = orderBean.getAmountForItem(itemIdParam);
+                response.getWriter().write(Double.toString(oldAmount));
             } catch (NumberFormatException | IOException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
@@ -61,16 +68,22 @@ public class ItemAddServlet extends HttpServlet {
 
         }
         try {
-            int amount = Integer.parseInt(amountParam);
+            double amount = Double.parseDouble(amountParam);
             orderBean.setItemAmount(itemIdParam, amount);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage());
         }
-
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator(' ');
+        DecimalFormat format = new DecimalFormat("#,###.00", symbols);
         response.getWriter().write("[");
-        response.getWriter().write(Integer.toString(orderBean.getOverallCost()));
+        response.getWriter().write("\"");
+        response.getWriter().write(format.format(orderBean.getOverallCost()));
+        response.getWriter().write("\"");
         response.getWriter().write(",");
-        response.getWriter().write(Integer.toString(orderBean.getOverallAmount()));
+        response.getWriter().write("\"");
+        response.getWriter().write(orderBean.getOrderedItemsCount());
+        response.getWriter().write("\"");
         response.getWriter().write("]");
     }
 

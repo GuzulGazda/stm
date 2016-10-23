@@ -2,36 +2,20 @@ $(document).ready(function () {
     registryItemPopup();
     regisryOrderPopup();
     registrySidebarMenu();
-    
-    $('a.show-items').click(function () {
-        $.get("cagalog.xhtml", { groupId:1, page:7 });
-    });
+    registryAddItemToOrder();
 
-    // set ordered item amount
-    $('#itemAmount').text($('#orderAmount').val());
+    $('a.show-items').click(function () {
+        $.get("cagalog.xhtml", {groupId: 1, page: 7});
+    });
 
     // set search string 
     $('#search').val($('#searchString').val());
 
-    // ============  Add item to order start ====================//
-    $('a.item-add').click(function () {
-        // Getting the variable's value from a link 
-        var itemId = $(this).attr('itemId');
-        $.get('OrderItemAddServlet', {
-            itemId: itemId
-        }, function (responseText) {
-            var newAmount = parseInt(responseText);
-            $('#itemAmount').text(newAmount);
-            $('#itemBuy' + itemId).html('<a href="#order-box" class="order-window"><img src="resources/img/basket_small.png" title="Корзина"/></a>');
-            regisryOrderPopup();
-        });
-        return false;
-    });
-    // ============  Add item to order end =====================//
-    $('ul.nav-list #').parent().children('ul.tree').toggle(0);
+//    $('ul.nav-list #').parent().children('ul.tree').toggle(0);
     // Expand selected group
-    var selectedGroup = $('#groupId').val();
+//    var selectedGroup = $('#groupId').val();
 //    $('ul.nav-list #' + selectedGroup + '').parent().children('ul.tree').toggle(0);
+
 });
 
 function regisryOrderPopup() {
@@ -48,7 +32,7 @@ function regisryOrderPopup() {
                 $('.order-popup').slideDown(100);
             },
             error: function () {
-                alert('error');
+
             },
             complete: function () {
             }
@@ -101,12 +85,30 @@ function registryItemPopup() {
     // ============   Item popup end =====================//    
 }
 
+function registryAddItemToOrder() {
+    // ============  Add item to order start ====================//
+    $('a.item-add').click(function () {
+        // Getting the variable's value from a link 
+        var itemId = $(this).attr('itemId');
+        $.get('OrderItemAddServlet', {
+            itemId: itemId
+        }, function (responseText) {
+            var newOrderedItemCount = responseText;
+            $('#orderedItemCount').text(newOrderedItemCount);
+            $('#itemBuy' + itemId).html('<a href="#order-box" class="order-window"><img src="resources/img/basket_small.png" title="Корзина"/></a>');
+            regisryOrderPopup();
+        });
+        return false;
+    });
+    // ============  Add item to order end =====================//
+}
+
 function registrySidebarMenu() {
     // ============   Sidebar stat =======================//
     $('.tree-toggle').click(function () {
         $(this).parent().children('ul.tree').toggle(0);
     });
-    
+
     $(function () {
         $('.tree-toggle').parent().children('ul.tree').toggle(0);
     });

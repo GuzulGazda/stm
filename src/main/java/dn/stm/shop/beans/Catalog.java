@@ -38,18 +38,20 @@ public class Catalog implements Serializable {
 
     public static final String MAIN_GROUP_ID = "00016";
 
-    private static final int COLUMN_NAME = 0;
-    private static final int COLUMN_DESCRIPTION = 1;
-    private static final int COLUMN_ID = 5;
-    private static final int COLUMN_PARENT_ID = 6;
-    private static final int COLUMN_UNIT = 7;
-    private static final int COLUMN_PRICE_1 = 8;
-    private static final int COLUMN_PRICE_2 = 9;
-    private static final int COLUMN_PRICE_3 = 10;
-    private static final int COLUMN_IMG = 13;
+    private final int COLUMN_GROUP_NAME = 0;
+    private final int COLUMN_ITEM_NAME = 5;
+    private final int COLUMN_DESCRIPTION = 1;
+    private final int COLUMN_ID = 6;
+    private final int COLUMN_PARENT_ID = 7;
+    private final int COLUMN_UNIT = 8;
+    private final int COLUMN_PRICE_1 = 9;
+    private final int COLUMN_PRICE_2 = 10;
+    private final int COLUMN_PRICE_3 = 11;
+    private final int COLUMN_IMG = 13;
 
-    private final String FILE_NAME = "18102016.XLSX";
+    private final String FILE_NAME = "19102016.XLSX";
 
+    private final String UNKNOW_ITEM_DESCRIPTION = "Здесь должно быть описание для товара";
     // Variables
     private final List<Item> allItems = new ArrayList<>();          // all items in catalog
     private final List<ItemGroup> allGroups = new ArrayList<>();    // all groups in catalog
@@ -79,8 +81,9 @@ public class Catalog implements Serializable {
     }
 
     private void loadCatalog() {
+        LOGGER.log(Level.OFF, "Load catalog");
         ClassLoader classLoader = this.getClass().getClassLoader();
-        String name = "";
+        String name;
         try (InputStream inputStream = classLoader.getResourceAsStream(FILE_NAME)) {
             Workbook workbook = WorkbookFactory.create(inputStream);
 //            if (FILE_NAME.toLowerCase().endsWith("xlsx")) {
@@ -104,13 +107,15 @@ public class Catalog implements Serializable {
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 try {
-                    name = row.getCell(COLUMN_NAME).getStringCellValue();
+                    name = row.getCell(COLUMN_GROUP_NAME).getStringCellValue();
                 } catch (Exception e) {
+                    continue;
                 }
-
+                if (name == null || name.isEmpty()) {
+                    continue;
+                }
                 if ("СТРОЙМАТЕРИАЛЫ".equalsIgnoreCase(name)) {
                     read = true;
-                    System.out.println("FOIND!!!");
                     continue;
                 }
                 if (!read) {
@@ -146,10 +151,17 @@ public class Catalog implements Serializable {
     }
 
     private void parseGroupRow(Row row) {
+
+        String groupName = null;
+        String groupId = null;
+        String parentId;
         try {
-            String groupName = row.getCell(COLUMN_NAME).getStringCellValue().trim();
-            String groupId = row.getCell(COLUMN_ID).getStringCellValue().trim();
-            String parentId = row.getCell(COLUMN_PARENT_ID).getStringCellValue().trim();
+            groupName = row.getCell(COLUMN_GROUP_NAME).getStringCellValue().trim();
+            groupId = row.getCell(COLUMN_ID).getStringCellValue().trim();
+            if (groupId.contains("+")) {
+                System.out.println("IHOR FOUND + in groupID:" + groupId);
+            }
+            parentId = row.getCell(COLUMN_PARENT_ID).getStringCellValue().trim();
             ItemGroup itemGroup = new ItemGroup(groupId, parentId, groupName);
 
             if (MAIN_GROUP_ID.equals(parentId)) {
@@ -160,14 +172,23 @@ public class Catalog implements Serializable {
             }
             allGroups.add(itemGroup);
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error during parsing group [{0}] where id = [{1}]. Error is {2}", new Object[]{groupName, groupId, e.getMessage()});
         }
     }
 
     private void parseItemRow(Row row) {
+        String itemName = null;
         try {
-            String itemName = row.getCell(COLUMN_NAME).getStringCellValue();
+            itemName = row.getCell(COLUMN_ITEM_NAME).getStringCellValue();
             String itemId = row.getCell(COLUMN_ID).getStringCellValue().trim();
+            if (itemId.contains("+")) {
+                // TODO move "pluus" to constants
+                // TODO replace "+" inside groupsID's
+                itemId = itemId.replace("+", "plus");
+            }
+            if (itemId.contains("-")) {
+                System.out.println("ITEM ID CONTAINS - " + itemName);
+            }
             String parentId = row.getCell(COLUMN_PARENT_ID).getStringCellValue().trim();
             String unitName = row.getCell(COLUMN_UNIT).getStringCellValue().trim();
             ItemUnit itemUnit = ItemUnit.fromString(unitName);
@@ -176,7 +197,7 @@ public class Catalog implements Serializable {
             double price_03 = price_01;
             try {
                 price_02 = row.getCell(COLUMN_PRICE_2).getNumericCellValue();
-                price_03 = row.getCell(COLUMN_PRICE_2).getNumericCellValue();
+                price_03 = row.getCell(COLUMN_PRICE_3).getNumericCellValue();
             } catch (Exception e) {
                 // use price_01 for all prices
             }
@@ -185,11 +206,10 @@ public class Catalog implements Serializable {
             try {
                 description = row.getCell(COLUMN_DESCRIPTION).getStringCellValue().trim();
             } catch (Exception e) {
-                // TODO Log oboun description error
+//                LOGGER.log(Level.OFF, "There is no description for item " + itemName);
             }
             if (description == null || description.isEmpty()) {
-                // TODO move String to constant
-                description = "Здесь должно быть описание для товара \"" + itemName + "\"";
+                description = UNKNOW_ITEM_DESCRIPTION + " \"" + itemName + "\"";
             }
 
             String imgFileName;
@@ -197,16 +217,12 @@ public class Catalog implements Serializable {
                 imgFileName = row.getCell(COLUMN_IMG).getStringCellValue().trim();
 
             } catch (Exception e) {
-                // TODO Log oboun description error
+//                LOGGER.log(Level.OFF, "There is no image for item " + itemName);
                 imgFileName = "unknown.jpg";
             }
 
-            int cost_01 = (int) price_01 * 100;
-            int cost_02 = (int) price_02 * 100;
-            int cost_03 = (int) price_03 * 100;
-
             Item item = new Item(itemId, parentId, itemName, itemUnit,
-                    cost_01, cost_02, cost_03, description, imgFileName);
+                    price_01, price_02, price_03, description, imgFileName);
 
             if (MAIN_GROUP_ID.equals(parentId)) {
                 items.add(item);
@@ -216,32 +232,19 @@ public class Catalog implements Serializable {
             }
             allItems.add(item);
         } catch (Exception e) {
-            // TODO log to file
+            LOGGER.log(Level.SEVERE, "Error during parsing item {}" + itemName);
         }
     }
 
-    private List<Item> getAllItems(String sortField, boolean sortAscending) {
-        return sorted(allItems, sortField, sortAscending);
-    }
-
-    List<Item> getGroupItemsListById(String groupId, String sortField, boolean sortAscending) {
+    List<Item> getItemsListByGroupId(String groupId, String sortField, boolean sortAscending) {
 
         // If groupId == 1 - show all items from catalog
         if (MAIN_GROUP_ID.equals(groupId)) {
             return sorted(allItems, sortField, sortAscending);
         }
-        System.out.println("HERE IS ERROR: groupId =  " + groupId + ", sortField = " + sortField + ", sortAsc = " + sortAscending);
         return sorted(getGroupById(groupId).getItems(), sortField, sortAscending);
     }
 
-//    List<ItemGroup> getGroupGroupsListById(String groupId, String sortField, boolean sortAscending) {
-//
-//        // If groupId == 1 - show all items from catalog
-//        if ("1".equals(groupId)) {
-//            return groups;
-//        }
-//        return getGroupById(groupId).getGroups();
-//    }
     List<Item> getSearchItemList(String search, String sortField, boolean sortAscending) {
         Set<Item> resultSet = new HashSet<>();
 
@@ -314,13 +317,12 @@ public class Catalog implements Serializable {
 
         @Override
         public int compare(Item i1, Item i2) {
-            Integer ItemPrice1 = i1.getPrice_1();
-            Integer ItemPrice2 = i2.getPrice_1();
+            Double ItemPrice1 = i1.getPrice_1();
+            Double ItemPrice2 = i2.getPrice_1();
 
             //ascending order
             return ItemPrice1.compareTo(ItemPrice2);
 
-            //descending order
         }
     };
 
@@ -329,8 +331,8 @@ public class Catalog implements Serializable {
 
         @Override
         public int compare(Item i1, Item i2) {
-            Integer ItemPrice1 = i1.getPrice_1();
-            Integer ItemPrice2 = i2.getPrice_1();
+            Double ItemPrice1 = i1.getPrice_1();
+            Double ItemPrice2 = i2.getPrice_1();
 
             //descending order
             return ItemPrice2.compareTo(ItemPrice1);
@@ -361,7 +363,7 @@ public class Catalog implements Serializable {
             }
         }
         LOGGER.log(Level.SEVERE, "Item not found for Id {0}", id);
-        return null;
+        return result;
     }
 
     private ItemGroup getGroupById(String id) {
@@ -374,7 +376,6 @@ public class Catalog implements Serializable {
             }
         }
         LOGGER.log(Level.SEVERE, "!!Group not found for Id {0}", id);
-        LOGGER.log(Level.SEVERE, "All Groups size is {0}", allGroups.size());
         return null;
     }
 

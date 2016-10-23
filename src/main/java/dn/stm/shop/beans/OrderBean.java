@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -16,20 +15,14 @@ import javax.faces.event.AjaxBehaviorEvent;
 public class OrderBean implements Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(OrderBean.class.getName());
+
+    private final double PRICE_1_MAX = 10_000;
+    private final double PRICE_2_MAX = 40_000;
+
     private final List<Item> orderedItems = new ArrayList<>();
 
-    @PostConstruct
-    private void init() {
-        System.out.println("Order:: init");
-    }
-
+    // TODO remove this method
     public void namedChanged(AjaxBehaviorEvent event) {
-        System.out.println("named CHANGED!!!");
-//        result = "Hello, you entered " + named;
-    }
-
-    public void changeAmount(AjaxBehaviorEvent event) {
-        System.out.println("Change amount:::");
     }
 
     public void add(Item item) {
@@ -42,7 +35,6 @@ public class OrderBean implements Serializable {
         boolean exists = false;
         for (Item orderedItem : orderedItems) {
             if (orderedItem.getId().equals(item.getId())) {
-                LOGGER.log(Level.SEVERE, "Item {0} is already in a order. Scip adding. ", item);
                 exists = true;
                 break;
             }
@@ -51,7 +43,6 @@ public class OrderBean implements Serializable {
             item.setOrdered(true);
             item.setAmount(1);
             orderedItems.add(item);
-            LOGGER.log(Level.SEVERE, "Added {0} to order", item);
         }
     }
 
@@ -66,20 +57,31 @@ public class OrderBean implements Serializable {
         if (itemToRemove != null) {
             itemToRemove.setOrdered(false);
             orderedItems.remove(itemToRemove);
-            LOGGER.log(Level.SEVERE, "Remove {0} from order", itemToRemove);
         }
     }
 
-    public int getOverallCost() {
-        int result = 0;
+    public double getOverallCost() {
+        double result = 0.0;
         for (Item orderedItem : orderedItems) {
             result += orderedItem.getAmount() * orderedItem.getPrice_1();
+        }
+        if (result >= PRICE_1_MAX) {
+            result = 0.0;
+            for (Item orderedItem : orderedItems) {
+                result += orderedItem.getAmount() * orderedItem.getPrice_2();
+            }
+            if (result >= PRICE_2_MAX) {
+                result = 0.0;
+                for (Item orderedItem : orderedItems) {
+                    result += orderedItem.getAmount() * orderedItem.getPrice_3();
+                }
+            }
         }
         return result;
     }
 
-    public int getOverallAmount() {
-        int result = 0;
+    public double getOverallAmount() {
+        double result = 0;
         for (Item orderedItem : orderedItems) {
             result += orderedItem.getAmount();
         }
@@ -87,8 +89,11 @@ public class OrderBean implements Serializable {
         return result;
     }
 
-    public void setItemAmount(String itemId, int amount) {
-        System.out.println("OrderBean:: SetItemAmount");
+    public String getOrderedItemsCount() {
+        return Integer.toString(orderedItems.size());
+    }
+
+    public void setItemAmount(String itemId, double amount) {
         for (Item orderedItem : orderedItems) {
             if (orderedItem.getId().equals(itemId)) {
                 orderedItem.setAmount(amount);
@@ -97,9 +102,9 @@ public class OrderBean implements Serializable {
         }
     }
 
-    public int getAmountForItem(String itemId) {
+    public double getAmountForItem(String itemId) {
         for (Item orderedItem : orderedItems) {
-            if (orderedItem.getId().equals(itemId)){
+            if (orderedItem.getId().equals(itemId)) {
                 return orderedItem.getAmount();
             }
         }

@@ -33,9 +33,10 @@ public class OrderItemAddServlet extends HttpServlet {
         try {
             Item item = catalog.getItemById(itemIdParam);
             order.add(item);
-            int newOrderAmount = order.getOverallAmount();
-            response.getWriter().write(Integer.toString(newOrderAmount));
+            String newOrderedItemsCount = order.getOrderedItemsCount();
+            response.getWriter().write(newOrderedItemsCount);
         } catch (Exception e) {
+            // TODO Do it in a right way!!
             response.getWriter().write("error");
         } 
 

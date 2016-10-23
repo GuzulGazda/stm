@@ -16,8 +16,8 @@
                     </aside>
                     <div class="description">#{Item.item.description}</div>
                     <div class="cost">Цена: <span>
-                            <h:outputText value="#{Item.item.price_1 / 100}">
-                                <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+                            <h:outputText value="#{Item.item.price_1}">
+                                <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,##0.00" type="currency" currencySymbol="Руб."/>
                             </h:outputText>
                         </span></div>
                 </section>

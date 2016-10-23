@@ -51,7 +51,7 @@ public class CatalogController implements Serializable {
     private List<Item> itemList;
     private String groupId = Catalog.MAIN_GROUP_ID;        // defautl value - show all items in catalog
 
-    // Paging.
+    // Paging
     private int totalRows;
     private int totalPages;
     private int currentPage;
@@ -86,7 +86,6 @@ public class CatalogController implements Serializable {
     }
 
     private void readParams() {
-
         HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 
         String sortParam = req.getParameter("sort");
@@ -94,8 +93,6 @@ public class CatalogController implements Serializable {
         String groupIdParam = req.getParameter("groupId");
         String itemToAdd = req.getParameter("itemToAdd");
         String searchParam = req.getParameter("search");
-
-        LOGGER.log(Level.INFO, "Params are: sort = {0}, page = {1}, groupId = {2}, search {3}= ", new Object[]{sortParam, pageParam, groupIdParam, searchParam});
 
         // save search string in session
         if (searchParam != null && !searchParam.isEmpty()) {
@@ -140,21 +137,20 @@ public class CatalogController implements Serializable {
     }
 
     private List<Item> getAllItems() {
+        // TODO move strings to constants
         // check if search
         String search = searchBean.getSearchString();
         if (search != null && !search.isEmpty()) {
             title = "Результаты поиска по слову \"" + search + "\" .";
             return catalog.getSearchItemList(search, sort, sortAscending);
         } else if (groupId != null && !groupId.isEmpty()) {
-            title = "Товары раздела \"" + catalog.getGroupNameById(groupId) + "\" .";
+            if (Catalog.MAIN_GROUP_ID.equals(groupId)) {
+                title = "Все товары каталога.";
+            } else {
+                title = "Товары раздела \"" + catalog.getGroupNameById(groupId) + "\" .";
+            }
         }
-        System.out.println("IHOR : Get All items  for groupId " + groupId);
-        if (groupId == Catalog.MAIN_GROUP_ID) {
-            System.out.println("\nReturn " + catalog.getAllItems().size() + " items");
-            return catalog.getAllItems();
-
-        }
-        return catalog.getGroupItemsListById(groupId, sort, sortAscending);
+        return catalog.getItemsListByGroupId(groupId, sort, sortAscending);
     }
 
     private void preparePaginationButtons() {

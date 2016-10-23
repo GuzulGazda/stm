@@ -12,16 +12,16 @@ public class Item implements Serializable {
     private String groupId;
     private String name;
     private ItemUnit itemUnit;
-    private int price_1;
-    private int price_2;
-    private int price_3;
+    private final double price_1;
+    private final double price_2;
+    private final double price_3;
     private String description;
     private String imgFileName;
     private boolean ordered;
-    private int amount;
+    private double amount;
 
     public Item(String id, String groupId, String name, ItemUnit itemUnit,
-            int price_1, int price_2, int price_3, String description, String imgFileName) {
+            double price_1, double price_2, double price_3, String description, String imgFileName) {
         this.id = id;
         this.groupId = groupId;
         this.name = name;
@@ -68,28 +68,16 @@ public class Item implements Serializable {
         this.itemUnit = itemUnit;
     }
 
-    public int getPrice_1() {
+    public double getPrice_1() {
         return price_1;
     }
 
-    public void setPrice_1(int price_1) {
-        this.price_1 = price_1;
-    }
-
-    public int getPrice_2() {
+    public double getPrice_2() {
         return price_2;
     }
 
-    public void setPrice_2(int price_2) {
-        this.price_2 = price_2;
-    }
-
-    public int getPrice_3() {
+    public double getPrice_3() {
         return price_3;
-    }
-
-    public void setPrice_3(int price_3) {
-        this.price_3 = price_3;
     }
 
     public String getDescription() {
@@ -117,12 +105,21 @@ public class Item implements Serializable {
         this.ordered = ordered;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public boolean canBePartial() {
+        if (itemUnit == ItemUnit.EDINICA
+                || itemUnit == ItemUnit.SHTUKA
+                || itemUnit == ItemUnit.PARA) {
+            return false;
+        }
+        return true;
     }
 
     @Override

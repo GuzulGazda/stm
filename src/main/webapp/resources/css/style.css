@@ -39,7 +39,7 @@ textarea { overflow: auto; }
     margin: 0 auto;
 }
 
-h1, h2, h3, h4 { font-family: Verdana, arial, sans-serif; }
+h1, h2, h3, h4 { font-family: HelveticaNeue, arial, sans-serif; }
 
 /* Top Nav */
 #top-nav { float: right; display: inline; padding: 8px 20px 2px; color: #94c516; line-height: 18px; }

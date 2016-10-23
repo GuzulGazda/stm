@@ -8,6 +8,12 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <body>
         <ui:composition>
+            <div id="warning" title="Basic dialog">
+                <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+            </div>
+
+            <button id="opener">Open Dialog</button>
+
             <div id="item-box" class="item-popup"></div>
             <div id="order-box" class="order-popup"></div>
             <h:form id="form">
@@ -39,7 +45,7 @@
                         <f:facet name="header">
                             Товар
                         </f:facet>
-                        <a href="#item-box" itemId="#{item.id}" class="item-window">#{item.name}</a>
+                        <a href="#item-box" itemId="#{item.id}" class="item-window" title="#{item.name}">#{item.name}</a>
                     </h:column>
                     <h:column>
                         <f:facet name="header">
@@ -51,25 +57,25 @@
                         <f:facet name="header">
                             Цена
                         </f:facet>
-                        <h:outputText value="#{item.price_1 / 100}">
-                            <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+                        <h:outputText value="#{item.price_1}">
+                            <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,##0.00" type="currency" currencySymbol="Руб."/>
                         </h:outputText>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
-                            От 5 000
+                            От 10_000
                         </f:facet>
-                        <h:outputText value="#{item.price_2 / 100}">
-                            <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+                        <h:outputText value="#{item.price_2}">
+                            <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,##0.00" type="currency" currencySymbol="Руб."/>
                         </h:outputText>
                     </h:column>
                     <h:column>
                         <f:facet name="header">
-                            От 20 000
+                            От 40_000
                         </f:facet>
-                        <h:outputText value="#{item.price_3 / 100}">
-                            <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,###" type="currency" currencySymbol="Руб."/>
+                        <h:outputText value="#{item.price_3}">
+                            <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,##0.00" type="currency" currencySymbol="Руб."/>
                         </h:outputText>
                     </h:column>
                     <h:column>
