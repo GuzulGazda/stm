@@ -1,27 +1,40 @@
 package dn.stm.shop.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
  * @author home
  */
-public class Item implements Serializable {
+public class Item implements Serializable, Cloneable {
 
-    private String id;
-    private String groupId;
-    private String name;
-    private ItemUnit itemUnit;
-    private final double price_1;
-    private final double price_2;
-    private final double price_3;
-    private String description;
-    private String imgFileName;
-    private boolean ordered;
-    private double amount;
+    private String id;                  // item id
+    private String groupId;             // item group id
+    private String name;                // item name
+    private ItemUnit itemUnit;          // item  unit
+    private final double price_1;       // item price 1
+    private final double price_2;       // item price 2 
+    private final double price_3;       // item price 3
+    private String description;         // item description
+    private boolean ordered;            // true if item is ordered
+    private double amount;              // amoumt of ordered item - cam be partoa;
+//    private String imgFileName;         // name of the file in resources/img/items folder
 
+    /**
+     * Constructor
+     * 
+     * @param id - item id   
+     * @param groupId - item group id
+     * @param name - item name
+     * @param itemUnit - item's ItemUnit
+     * @param price_1 - item price 1
+     * @param price_2 - item price 2
+     * @param price_3 - item price 3
+     * @param description - item description
+     */
     public Item(String id, String groupId, String name, ItemUnit itemUnit,
-            double price_1, double price_2, double price_3, String description, String imgFileName) {
+            double price_1, double price_2, double price_3, String description) {
         this.id = id;
         this.groupId = groupId;
         this.name = name;
@@ -31,11 +44,37 @@ public class Item implements Serializable {
         this.price_3 = price_3;
         this.ordered = false;
         this.description = description;
-        this.imgFileName = imgFileName;
+        this.ordered = false;
+        this.amount = 0;
+        // find item image in resources/img/items
+//        String path = new String()
+//        try {
+//            File imgFile = new File
+//        } catch (Fil e) {
+//        }
+    }
+
+
+    private Item(Item anotherItem) {
+        this.id = anotherItem.getId();
+        this.groupId = anotherItem.getGroupId();
+        this.name = anotherItem.getName();
+        this.itemUnit = anotherItem.getItemUnit();
+        this.price_1 = anotherItem.getPrice_1();
+        this.price_2 = anotherItem.getPrice_2();
+        this.price_3 = anotherItem.getPrice_3();
+        this.description = anotherItem.getDescription();
         this.ordered = false;
         this.amount = 0;
     }
+    
+    @Override
+    public Item clone() {
+        return new Item(this);
+    }
 
+
+// Getters and setters start
     public String getId() {
         return id;
     }
@@ -88,15 +127,6 @@ public class Item implements Serializable {
         this.description = description;
     }
 
-    public String getImgFileName() {
-        System.out.println("IMAGE IS " + imgFileName);
-        return imgFileName;
-    }
-
-    public void setImgFileName(String imgFileName) {
-        this.imgFileName = imgFileName;
-    }
-
     public boolean isOrdered() {
         return ordered;
     }
@@ -112,7 +142,12 @@ public class Item implements Serializable {
     public void setAmount(double amount) {
         this.amount = amount;
     }
-
+    // Getters and setters end
+    
+    /**
+     * TODO
+     * @return true if amount of this item can be partial
+     */
     public boolean canBePartial() {
         if (itemUnit == ItemUnit.EDINICA
                 || itemUnit == ItemUnit.SHTUKA
@@ -123,7 +158,25 @@ public class Item implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "Item{" + "id=" + id + ", groupId=" + groupId + ", name=" + name + ", itemUnit=" + itemUnit + ", cost=" + price_1 + ", costs=" + price_2 + ", costt=" + price_3 + '}';
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        return hash;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Item other = (Item) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }   
+  
 }

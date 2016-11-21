@@ -37,7 +37,7 @@
                     <h1>Каталог товаров</h1>
                     <br/>
                     <ul class="nav nav-list sidebar-list">
-                        <ui:repeat value="#{Catalog.groups}" var="group" >
+                        <ui:repeat value="#{Catalog.topLevelGroups}" var="group" >
                             <li>
                                 <h:link title="#{group.name}" outcome="catalog" rendered="#{CatalogController.groupId != group.id}">
                                     <f:param name="groupId" value="#{group.id}" />

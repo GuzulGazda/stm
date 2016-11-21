@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <body>
+
+        <ui:composition>
+            <script>
+                $(document).ready(function () {
+                    $("#readFile").click(function () {
+                        $("#readFileInfo").text('');
+                        $.get("DataReadServlet", function (responseText) {
+                            $("#readFileInfo").html(responseText);
+                        });
+                    });
+                    $("#saveDbButton").click(function () {
+                        $("#saveDbInfo").text('');
+                        $.get("DataSaveServlet", function (responseText) {
+                            $("#saveDbInfo").html(responseText);
+                        });
+                    });
+                });
+
+            </script>
+            <div id="order-box" class="order-popup"></div>
+            <div id="content">
+
+                <h2>Загрузка из файла</h2>
+                <input id="readFile" type="button" value="Прочитать файл"/>
+                <div id="readFileInfo"></div>
+                <div id="saveDb">
+                    <input id="saveDbButton" type="button" value="Загрузить даные в БД"/>
+                </div>
+                <div id="saveDbInfo"></div>
+            </div>
+        </ui:composition>
+    </body>
+</html>

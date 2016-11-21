@@ -11,15 +11,13 @@ public class SearchBean implements Serializable {
     private String searchString = "";
     private boolean active = false;
 
-    
-    
     public String getSearchString() {
         return searchString;
     }
 
     public void setSearchString(String searchString) {
         this.searchString = searchString;
-        active = searchString.trim().length()> 0;
+        active = searchString.trim().length() > 0;
     }
 
     public boolean isActive() {

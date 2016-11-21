@@ -8,7 +8,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-        <title>Стройтехмонтаж</title>
+        <title>СТМ</title>
         <h:outputStylesheet name="css/style.css"/>
         <h:outputStylesheet name="css/table.css"/>
         <h:outputStylesheet name="css/pagination.css"/>
@@ -24,43 +24,46 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
     </h:head>
-    <!-- Begin Wrapper -->
-    <div id="wrapper">
-        <!-- Begin Shell -->
-        <div class="shell">
-            <ui:insert name="top">
-                <ui:include src="templates/commonHeader.xhtml"/>
-            </ui:insert>
-            <div class="cl">&nbsp;</div>
-            <!-- Begin Main -->
-            <div id="main">
-                <ui:insert name="slider">
-                    <ui:include src="templates/catalogSlider.xhtml"/>
+    <h:body>
+        <div class="loader"></div>
+        <!-- Begin Wrapper -->
+        <div id="wrapper">
+            <!-- Begin Shell -->
+            <div class="shell">
+                <ui:insert name="top">
+                    <ui:include src="templates/commonHeader.xhtml"/>
                 </ui:insert>
-                <div id="content">
-                    <div id="order-box" class="order-popup"></div>
-                    <div class="top"></div>
-                    <!-- Begin Inner -->
-                    <div class="inner">
-                        Главная страница
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
+                <div class="cl">&nbsp;</div>
+                <!-- Begin Main -->
+                <div id="main">
+                    <ui:insert name="slider">
+                        <ui:include src="templates/catalogSlider.xhtml"/>
+                    </ui:insert>
+                    <div id="content">
+                        <div id="order-box" class="order-popup"></div>
+                        <div class="top"></div>
+                        <!-- Begin Inner -->
+                        <div class="inner">
+                            Главная страница
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                        </div>
+                        <!-- End Inner -->
                     </div>
-                    <!-- End Inner -->
+                    <!-- End Content -->
+
+
                 </div>
-                <!-- End Content -->
-
-
+                <!-- End Main -->
+                <ui:insert name="footer">
+                    <ui:include src="templates/commonFooter.xhtml"/>
+                </ui:insert>
             </div>
-            <!-- End Main -->
-            <ui:insert name="footer">
-                <ui:include src="templates/commonFooter.xhtml"/>
-            </ui:insert>
+            <!-- End Shell -->
         </div>
-        <!-- End Shell -->
-    </div>
-    <!-- End Wrapper -->
+        <!-- End Wrapper -->
+    </h:body>
 </html>
 

@@ -50,6 +50,7 @@ public class CatalogController implements Serializable {
     // items to show
     private List<Item> itemList;
     private String groupId = Catalog.MAIN_GROUP_ID;        // defautl value - show all items in catalog
+//    private String currentGroupId = null;
 
     // Paging
     private int totalRows;
@@ -63,11 +64,12 @@ public class CatalogController implements Serializable {
 
     @PostConstruct
     private void init() {
+        LOGGER.info ("====================== CatalogController init ===============");
         // Set default values
         currentPage = 1;
         this.showPagination = true;
 
-        readParams();
+        readParams();        
         List<Item> allItems = getAllItems();
         totalRows = allItems.size();
         title += " Найдено товаров: " + totalRows + ".";
@@ -97,6 +99,8 @@ public class CatalogController implements Serializable {
         // save search string in session
         if (searchParam != null && !searchParam.isEmpty()) {
             searchBean.setSearchString(searchParam);
+        } else {
+            searchBean.setSearchString("");
         }
 
         if (itemToAdd != null && !itemToAdd.isEmpty()) {
@@ -122,11 +126,11 @@ public class CatalogController implements Serializable {
         // groupId param
         if (groupIdParam != null && !groupIdParam.isEmpty()) {
             // TODO Fix this 
-            searchBean.setSearchString("");
+//            searchBean.setSearchString("");
             try {
                 groupId = groupIdParam;
                 if (groupId == null || groupId.isEmpty()) {
-                    searchBean.setSearchString("");
+//                    searchBean.setSearchString("");
                 }
 
             } catch (Exception e) {
@@ -141,16 +145,18 @@ public class CatalogController implements Serializable {
         // check if search
         String search = searchBean.getSearchString();
         if (search != null && !search.isEmpty()) {
+//            LOGGER.log(Level.INFO, "Search by {0}", search);
             title = "Результаты поиска по слову \"" + search + "\" .";
             return catalog.getSearchItemList(search, sort, sortAscending);
-        } else if (groupId != null && !groupId.isEmpty()) {
+        } else {
+//            LOGGER.log(Level.INFO, "Fing group {0}", groupId);
             if (Catalog.MAIN_GROUP_ID.equals(groupId)) {
                 title = "Все товары каталога.";
             } else {
                 title = "Товары раздела \"" + catalog.getGroupNameById(groupId) + "\" .";
             }
+            return catalog.getItemsListByGroupId(groupId, sort, sortAscending);
         }
-        return catalog.getItemsListByGroupId(groupId, sort, sortAscending);
     }
 
     private void preparePaginationButtons() {
@@ -247,14 +253,6 @@ public class CatalogController implements Serializable {
 
     public String getGroupId() {
         return groupId;
-    }
-
-    public int getTotalRows() {
-        return totalRows;
-    }
-
-    public int getTotalPages() {
-        return totalPages;
     }
 
     public int getCurrentPage() {

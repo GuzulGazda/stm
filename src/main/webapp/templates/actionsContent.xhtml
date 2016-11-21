@@ -8,12 +8,20 @@
         <ui:composition>
             <div id="order-box" class="order-popup"></div>
             <div id="content">
-                <h:form id="form">
-                    <h4>Акции</h4>
-                </h:form>
-                <input type="hidden" id="page" name="page" value="#{CatalogController.currentPage}"/>
-                <input type="hidden" id="groupId" name="groupId" value="#{CatalogController.groupId}"/>
-                <input type="hidden" id="orderAmount" name="orderAmount" value="#{Order.overallAmount}"/>
+                <big>
+                    <h3>
+                    Уважаемые покупатели, напоминаем Вам о том, что на нашем предприятии существует накопительная система скидок:
+                    </h3>
+                    <p>
+                        <b>1 категория</b> – розничные цены.
+                    </p>
+                    <p>
+                        <b>2 категория</b> – при разовой покупке товара на сумму от <b><i>10 000 руб</i></b> или при покупке товара на сумму от <b><i>20 000 руб</i></b> в течении двух последних месяцев покупателю предоставляется скидка от <b><i>2%</i></b> до <b><i>10%</i></b>.
+                    </p>
+                    <p>
+                        <b>3 категория</b> – при разовой покупке товара на сумму от <b><i>40 000 руб</i></b> руб или при покупке товара на сумму от <b><i>80 000 руб</i></b> в течении двух последних месяцев покупателю предоставляется скидка от <b><i>5%</i></b> до <b><i>15%</i></b>.
+                    </p>
+                </big>
             </div>
         </ui:composition>
     </body>

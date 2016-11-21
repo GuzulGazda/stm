@@ -20,7 +20,7 @@ public class MenuController implements Serializable {
     private void init() {
         HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         
-        MenuItem mainPage = new MenuItem("index.xhtml", "Главная", "first");
+        MenuItem mainPage = new MenuItem("index.xhtml", "Главная", "");
         MenuItem aboutPage = new MenuItem("about.xhtml", "О компании", "");
         MenuItem catalogPage = new MenuItem("catalog.xhtml", "Продукция","");
         MenuItem actionsPage = new MenuItem("actions.xhtml", "Акции","");
@@ -37,10 +37,10 @@ public class MenuController implements Serializable {
         menuItems.add(actionsPage);
         menuItems.add(contactsPage);
         
-        if (url == null || url.isEmpty()){
-            mainPage.setHrefCss("active");
-            return;
-        }
+//        if (url == null || url.isEmpty()){
+//            mainPage.setHrefCss("active");
+//            return;
+//        }
         
         boolean pageSet = false;
         for (MenuItem menuItem : menuItems) {

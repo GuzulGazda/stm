@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/STM_Shop"/>
+<Context path="/STM">
+	<JarScanner scanClassPath="false" />
+</Context>

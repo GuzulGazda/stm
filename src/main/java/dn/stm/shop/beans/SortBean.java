@@ -32,7 +32,7 @@ public class SortBean implements Serializable {
 
     public String sortFieldChanged(AjaxBehaviorEvent event) {
         try {
-            sortField = (String) ((UIOutput)event.getSource()).getValue();
+            sortField = (String) ((UIOutput) event.getSource()).getValue();
             result = sortField;
             LOGGER.log(Level.INFO, "!!!!Change sortField to {0}", sortField);
             return result;
@@ -62,11 +62,4 @@ public class SortBean implements Serializable {
     public void setSortAsc(boolean sortAsc) {
         this.sortAsc = sortAsc;
     }
-
-    public String getResult() {
-        System.out.println("***********************  GET RESULT!!! ***********");
-        return result;
-    }
-
-    
 }

@@ -8,20 +8,29 @@ import java.io.Serializable;
  */
 public class PaginationButton implements Serializable {
 
+    // Constants
     public static final String ACTIVE = "active";
     public static final String DISABLED = "disabled";
     public static final String CURRENT = "current";
 
-    private final String label;
-    private final String className;
-    private final int page;
+    private final String label;         // button label
+    private final String className;     // CSS class of button
+    private final int page;             // page number
 
+    /**
+     * Constructor
+     *
+     * @param label - button label
+     * @param className - CSS class of button
+     * @param page - page number
+     */
     public PaginationButton(String label, String className, int page) {
         this.label = label;
         this.className = className;
         this.page = page;
     }
 
+    // Getters and setters end
     public String getLabel() {
         return label;
     }
@@ -33,6 +42,5 @@ public class PaginationButton implements Serializable {
     public int getPage() {
         return page;
     }
-
-
+    // Getters and setters end
 }

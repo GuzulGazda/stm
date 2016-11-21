@@ -9,13 +9,17 @@ $(document).ready(function () {
     });
 
     // set search string 
-    $('#search').val($('#searchString').val());
+    $("[name='search']").val($('#searchString').val());
 
 //    $('ul.nav-list #').parent().children('ul.tree').toggle(0);
     // Expand selected group
 //    var selectedGroup = $('#groupId').val();
 //    $('ul.nav-list #' + selectedGroup + '').parent().children('ul.tree').toggle(0);
 
+});
+
+$(window).load(function() {
+	$(".loader").fadeOut("slow");
 });
 
 function regisryOrderPopup() {

@@ -8,15 +8,9 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <body>
         <ui:composition>
-            <div id="warning" title="Basic dialog">
-                <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-            </div>
-
-            <button id="opener">Open Dialog</button>
-
             <div id="item-box" class="item-popup"></div>
             <div id="order-box" class="order-popup"></div>
-            <h:form id="form">
+            <!--<h:form id="form">-->
                 <h4>#{CatalogController.title}</h4>
                 <div class="pagination">
                     <ui:repeat value="#{CatalogController.paginationButtons}" var="button" rendered="#{CatalogController.showPagination}">
@@ -51,7 +45,7 @@
                         <f:facet name="header">
                             Ед.
                         </f:facet>
-                        <h:outputText value="#{item.itemUnit.text}" />
+                        <h:outputText value="#{item.itemUnit.name}" />
                     </h:column>
                     <h:column>
                         <f:facet name="header">
@@ -82,14 +76,14 @@
                         <f:facet name="header">
                             Купить
                         </f:facet>
-                        <dib id="itemBuy#{item.id}">
-                            <h:panelGroup rendered="#{!item.ordered}">
+                        <div id="itemBuy#{item.id}">
+                            <h:panelGroup rendered="#{!Order.existItem(item.id)}">
                                 <a href="#" itemId="#{item.id}" class="item-add">Купить</a>
                             </h:panelGroup>
-                            <h:panelGroup rendered="#{item.ordered}">                
+                            <h:panelGroup rendered="#{Order.existItem(item.id)}">                
                                 <a href="#order-box" class="order-window"><img src="resources/img/basket_small.png" title="Корзина"/></a>
                             </h:panelGroup>
-                        </dib>
+                        </div>
                     </h:column>
                 </h:dataTable>
                 <div class="pagination">
@@ -115,11 +109,7 @@
                     </ui:repeat>
                 </div>
                 <br/>
-                <input type="hidden" id="page" name="page" value="#{CatalogController.currentPage}"/>
-                <input type="hidden" id="groupId" name="groupId" value="#{CatalogController.groupId}"/>
-                <input type="hidden" id="orderAmount" name="orderAmount" value="#{Order.overallAmount}"/>
-            </h:form>
-
+            <!--</h:form>-->
         </ui:composition>
     </body>
 </html>

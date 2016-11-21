@@ -1,9 +1,5 @@
 package dn.stm.shop.model;
 
-/**
- *
- * @author home
- */
 public enum ItemUnit {
 
     SHTUKA("шт."),
@@ -18,16 +14,27 @@ public enum ItemUnit {
     RULON("рулон"),
     PARA("пара");
 
-    private final String text;
+    private final String name;
 
-    private ItemUnit(String text) {
-        this.text = text;
+    /**
+     * private Constructor 
+     * 
+     * creates ItemUnit by name
+     * @param name - name of ItemUnit
+     */
+    private ItemUnit(String name) {
+        this.name = name;
     }
 
-    public static ItemUnit fromString(String text) {
-        if (text != null) {
+    /**
+     *
+     * @param name - ItemUnit name
+     * @return ItemUnit object
+     */
+    public static ItemUnit fromString(String name) {
+        if (name != null) {
             for (ItemUnit itemUnit : ItemUnit.values()) {
-                if (text.equalsIgnoreCase(itemUnit.text)) {
+                if (name.equalsIgnoreCase(itemUnit.name)) {
                     return itemUnit;
                 }
             }
@@ -35,13 +42,11 @@ public enum ItemUnit {
         return null;
     }
 
-    public String getText() {
-        return text;
+    /**
+     * TODO
+     * @return name of ItemUnit
+     */
+    public String getName() {
+        return name;
     }
-
-    @Override
-    public String toString() {
-        return text;
-    }
-
 }

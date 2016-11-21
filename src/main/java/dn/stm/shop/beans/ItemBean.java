@@ -3,7 +3,6 @@ package dn.stm.shop.beans;
 import dn.stm.shop.model.Item;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -25,10 +24,10 @@ public class ItemBean implements Serializable {
     private String itemId;
     private Item item;
 
-    @PostConstruct
-    public void init() {
-
-    }
+//    @PostConstruct
+//    public void init() {
+//
+//    }
 
     public String getItemId() {
         return itemId;

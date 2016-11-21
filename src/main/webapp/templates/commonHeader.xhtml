@@ -25,7 +25,7 @@
                     <form method="get" action="catalog.xhtml" id="search_form">
                         &nbsp;&nbsp;&nbsp;
 
-                        <input type="text" value="#{Search.searchString}" title="Поиск..." name="search" class="blink field search" />
+                        <input type="text" title="Поиск..." name="search" class="blink field search" />
                         <input type="hidden" name="page" value="1" />
                         <input type="hidden" name="sort" value="#{CatalogController.sort}" />
                         <input class="search-button" type="submit" value="Submit"  title="Искать"/>
@@ -37,10 +37,6 @@
                         <h:outputText id="orderedItemCount" value="#{Order.orderedItemsCount}"/>
                     </div>
                 </div>
-                <div id="korzina">
-
-                </div>
-
                 <!-- End Search -->
                 <div class="cl">&nbsp;</div>
             </div>

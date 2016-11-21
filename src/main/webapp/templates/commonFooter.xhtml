@@ -7,15 +7,20 @@
     <body>
         <ui:composition>
             <!-- Begin Footer -->
+            <input type="hidden" id="page" name="page" value="#{CatalogController.currentPage}"/>
+            <input type="hidden" id="groupId" name="groupId" value="#{CatalogController.groupId}"/>
+            <input type="hidden" id="orderAmount" name="orderAmount" value="#{Order.overallAmount}"/>
             <div id="footer">
                 <p class="bottom-menu">
                     <ui:repeat value="#{Menu.menuItems}" var="menuItem">
                         <a href="#{menuItem.url}" title="#{menuItem.name}"><span>#{menuItem.name}</span></a>
                     </ui:repeat>
+                    <a href="admin.xhtml" title="Admin"><span>Admin</span></a>
                 </p>
                 <div id="bottom-logo"><a href="#" class="notext" title="Магазин Спецтехмонтаж">Спецтехмонаж. Design by: Игорь Калинчук</a></div>
                 <div class="cl">&nbsp;</div>
             </div>
+            <input type="hidden" id="searchString" name="searchString" value="#{Search.searchString}"/>
             <!-- End Footer -->
         </ui:composition>
     </body>

@@ -10,7 +10,6 @@
         <ui:composition>
             <script>
                 $(this).ready(function () {
-
                     $('.item-amount').change(function (event) {
                         var item = $(this);
                         var itemAmount = $(this).val();
@@ -143,8 +142,23 @@
                         });
                         return false;
                     });
-                    // TODO Create function for item popup
-//                    registryItemPopup();
+
+                    // ============   Send email  ============//
+                    $('#sendMail').click(function () {
+                        // Getting the variable's values
+                        var userName = $('#uName').val();
+                        var userEmail = $('#uEmail').val();
+                        var userMessage = $('#uMessage').val();
+                        $.post('SendMail', {
+                            name: userName,
+                            email: userEmail,
+                            message: userMessage
+                        }, function (responseText) {
+                            $('.order-popup').html('<h2>Заказ отправлен по адресу: ' +  userEmail + ' </h2>');
+                            location.reload();   
+                        });
+                        return false;
+                    });
                 });
             </script>
             <a href="#" class="close_order"><img src="resources/img/close_pop.png" class="btn_close" title="Закрыть" alt="З" /></a>
@@ -165,7 +179,7 @@
                     <f:facet name="header">
                         Ед.
                     </f:facet>
-                    <h:outputText value="#{item.itemUnit.text}" />
+                    <h:outputText value="#{item.itemUnit.name}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header">
@@ -196,25 +210,25 @@
                 </h:outputText>
                 <h:outputText value=" руб." />
             </h3>
-            <form  rendered="#{Order.overallAmount > 0}">
+            <ui:fragment rendered="#{Order.overallAmount > 0}">
                 <ul class="form-style">
                     <li>
                         <label>Введите имя <span class="required">*</span></label>
-                        <input type="text" name="field1" class="field-divided" placeholder="Ваше имя" />
+                        <input id="uName" type="text" name="field1" class="field-divided" placeholder="Ваше имя" />
                     </li>
                     <li>
                         <label>Email <span class="required">*</span></label>
-                        <input type="email" name="field3" class="field-long" />
+                        <input id="uEmail" type="email" name="field3" class="field-long" />
                     </li>
                     <li>
                         <label>Дополнительное сообщение <span class="required">*</span></label>
-                        <textarea name="field5" id="field5" class="field-long field-textarea"></textarea>
+                        <textarea id="uMessage" name="field5" class="field-long field-textarea"></textarea>
                     </li>
                     <li>
-                        <input type="submit" value="Отправить" />
+                        <input id="sendMail" type="submit" value="Отправить" />
                     </li>
                 </ul>
-            </form>
+            </ui:fragment>
         </ui:composition>
     </body>
 </html>

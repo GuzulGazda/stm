@@ -4,6 +4,7 @@ import dn.stm.shop.model.Item;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
@@ -14,19 +15,20 @@ import javax.faces.event.AjaxBehaviorEvent;
 @SessionScoped
 public class OrderBean implements Serializable {
 
+    private static final long serialVersionUID = 12345678L;
     private static final Logger LOGGER = Logger.getLogger(OrderBean.class.getName());
 
     private final double PRICE_1_MAX = 10_000;
     private final double PRICE_2_MAX = 40_000;
 
     private final List<Item> orderedItems = new ArrayList<>();
+    private CostUsed currentCostUsed = CostUsed.PRICE_1;
 
     // TODO remove this method
     public void namedChanged(AjaxBehaviorEvent event) {
     }
 
     public void add(Item item) {
-        LOGGER.log(Level.SEVERE, "Try to add item {0} to order.", item);
         if (item == null) {
             LOGGER.log(Level.SEVERE, "Cannot add item to order - item is null");
             return;
@@ -60,6 +62,15 @@ public class OrderBean implements Serializable {
         }
     }
 
+    public boolean existItem(String itemId) {
+        for (Item orderedItem : orderedItems) {
+            if (orderedItem.getId().equals(itemId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public double getOverallCost() {
         double result = 0.0;
         for (Item orderedItem : orderedItems) {
@@ -69,11 +80,13 @@ public class OrderBean implements Serializable {
             result = 0.0;
             for (Item orderedItem : orderedItems) {
                 result += orderedItem.getAmount() * orderedItem.getPrice_2();
+                currentCostUsed = CostUsed.PRICE_2;
             }
             if (result >= PRICE_2_MAX) {
                 result = 0.0;
                 for (Item orderedItem : orderedItems) {
                     result += orderedItem.getAmount() * orderedItem.getPrice_3();
+                    currentCostUsed = CostUsed.PRICE_3;
                 }
             }
         }
@@ -85,7 +98,6 @@ public class OrderBean implements Serializable {
         for (Item orderedItem : orderedItems) {
             result += orderedItem.getAmount();
         }
-        LOGGER.log(Level.SEVERE, "Overall amount is {0}", result);
         return result;
     }
 
@@ -116,8 +128,41 @@ public class OrderBean implements Serializable {
         return orderedItems;
     }
 
+    public double getCurrentCost(Item item) {
+        double result = 0.0;
+        switch (currentCostUsed) {
+            case PRICE_1:
+                result = item.getPrice_1();
+                break;
+            case PRICE_2:
+                result = item.getPrice_1();
+                break;
+            case PRICE_3:
+                result = item.getPrice_1();
+                break;
+        }
+        return result;
+    }
+
     @Override
     public String toString() {
         return "OrderBean{" + "orderedItems=" + orderedItems + '}';
+    }
+
+    /**
+     * Clear order - remove all items from order
+     */
+    public void clear() {
+        ListIterator<Item> iterator = orderedItems.listIterator();
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            item.setOrdered(false);
+        }
+        orderedItems.clear();
+    }
+
+    public enum CostUsed {
+
+        PRICE_1, PRICE_2, PRICE_3;
     }
 }

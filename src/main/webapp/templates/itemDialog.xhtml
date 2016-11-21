@@ -8,19 +8,37 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <body>
         <ui:composition>
-                <a href="#" class="close_item"><img src="resources/img/close_pop.png" class="btn_close" title="Закрыть" alt="З" /></a>
-                <section id="product">
-                    <aside>
-                        <div class="title" >#{Item.item.name}</div>
-                        <div id="img"><img src="resources/img/items/#{Item.item.imgFileName}" alt="#{Item.item.name}"></img></div>
-                    </aside>
-                    <div class="description">#{Item.item.description}</div>
-                    <div class="cost">Цена: <span>
-                            <h:outputText value="#{Item.item.price_1}">
-                                <f:convertNumber groupingUsed="true" minFractionDigits="2" pattern="###,##0.00" type="currency" currencySymbol="Руб."/>
-                            </h:outputText>
-                        </span></div>
-                </section>
+            <script>
+                $(this).ready(function ()
+                {
+                    $('img').error(function () {
+                        $(this).attr('src', 'resources/img/items/unknown.jpg');
+                    });
+
+                });
+            </script>
+            <a href="#" class="close_item"><img src="resources/img/close_pop.png" class="btn_close" title="Закрыть" alt="З" /></a>
+            <section id="product">
+                <div class="title" >#{Item.item.name}</div>
+                <table border="0">
+                    <tr>
+                        <td>
+                            <img src="resources/img/items/#{Item.item.id}.jpg"  alt="#{Item.item.name}" />
+                        </td>
+                        <td>
+                            #{Item.item.description}
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <h3>
+                    Цена: 
+                    <h:outputText id="overallCost" value="#{Item.item.price_1}">
+                        <f:convertNumber locale="ru" groupingUsed="true" minFractionDigits="2" type="currency" currencySymbol=""/>
+                    </h:outputText>
+                    <h:outputText value=" руб." />
+                </h3>
+            </section>
         </ui:composition>
     </body>
 </html>
